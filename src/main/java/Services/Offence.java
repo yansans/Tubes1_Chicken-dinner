@@ -8,53 +8,15 @@ import java.util.stream.*;
 
 public class Offence extends BotService {
 
-    
-    private List<GameObject> getObjectList(int type){
+    private int supernovaSize = 10;
+    private double supernovaRadius = 0.25 * supernovaSize;
+
+    private List<GameObject> getObjectList(ObjectTypes type){
         var gameState = getGameState();
         var bot = getBot();
 
-        Enum x;
-        switch (type) {
-            case 1 :
-                x = ObjectTypes.PLAYER;
-                break;
-            case 2 :
-                x = ObjectTypes.FOOD;
-                break;
-            case 3 :
-                x = ObjectTypes.WORMHOLE;
-                break;
-            case 4 :
-                x = ObjectTypes.GAS_CLOUD;
-                break;
-            case 5 :
-                x = ObjectTypes.ASTEROID_FIELD;
-                break;
-            case 6 :
-                x = ObjectTypes.TORPEDO_SALVO;
-                break;
-            case 7 :
-                x = ObjectTypes.SUPER_FOOD;
-                break;
-            case 8 :
-                x = ObjectTypes.SUPER_NOVA_PICKUP;
-                break;
-            case 9 :
-                x = ObjectTypes.SUPER_NOVA_BOMB;
-                break;
-            case 10 :
-                x = ObjectTypes.TELEPORTER;
-                break;
-            case 11 :
-                x = ObjectTypes.SHIELD;
-                break;
-            default :
-                x = ObjectTypes.FOOD;
-                break;
-        }
-
         var objectList = gameState.getGameObjects()
-                .stream().filter(item -> item.getGameObjectType() == x)
+                .stream().filter(item -> item.getGameObjectType() == type)
                 .sorted(Comparator
                         .comparing(item -> getDistanceBetween(bot, item)))
                 .collect(Collectors.toList());
@@ -62,75 +24,82 @@ public class Offence extends BotService {
         return objectList;
     }
 
-    public void fireTorpedoes(){
+    public void commandPlayer(PlayerActions command, int head){
         var playerAction = getPlayerAction();
-        playerAction.action = PlayerActions.FIRE_TORPEDOES;
-
-        var playerList = getObjectList(1);
-        playerList.remove(0);
-
-        if (!playerList.isEmpty()) {
-            playerAction.heading = getHeadingBetween(playerList.get(0));
-        } else {
-            playerAction.action = PlayerActions.FORWARD;
-            playerAction.heading = 0;
-        }
+        playerAction.action = command;
+        playerAction.heading = head;
 
         setPlayerAction(playerAction);
     }
 
-    public void getSupernova(){
-        var playerAction = getPlayerAction();
-        playerAction.action = PlayerActions.FORWARD;
-        playerAction.heading = 0;
+    private List<Object> defaultAction(){
+        var action = PlayerActions.FORWARD;
+        int head = 0;
 
-        var supernovaList = getObjectList(8);
-
-        if (!supernovaList.isEmpty()) {
-            playerAction.heading = getHeadingBetween(supernovaList.get(0));
-        } else {
-            playerAction.action = PlayerActions.FORWARD;
-            playerAction.heading = 0;
-        }
-
-        setPlayerAction(playerAction);
-    }
-
-    public void fireSupernova() {
-        var playerAction = getPlayerAction();
-        playerAction.action = PlayerActions.FIRE_SUPERNOVA;
-
-        var playerList = getObjectList(1);
-        playerList.remove(0);
+        var playerList = getObjectList(ObjectTypes.FOOD);
 
         if (!playerList.isEmpty()) {
-            playerAction.heading = getHeadingBetween(playerList.get(0));
-        } else {
-            playerAction.action = PlayerActions.FORWARD;
-            playerAction.heading = 0;
+            head = getHeadingBetween(playerList.get(0));
+        } 
+
+        return Arrays.asList(action, head);
+    }
+
+
+    public void basicAttack(PlayerActions action, ObjectTypes object){
+        int head = 0;
+        var objectList = getObjectList(object);
+
+        if(object == ObjectTypes.PLAYER){
+            objectList.remove(0);
         }
 
-        setPlayerAction(playerAction);
+        if (!objectList.isEmpty()) {
+            head = getHeadingBetween(objectList.get(0));
+        } else {
+            var defaultAction = defaultAction();
+            action = (PlayerActions) defaultAction.get(0);
+            head = (int) defaultAction.get(1);
+        }
+        commandPlayer(action, head);
     }
 
     public void detonateSupernova(){
-        var playerAction = getPlayerAction();
-        playerAction.action = PlayerActions.DETONATE_SUPERNOVA;
+        var action = PlayerActions.DETONATE_SUPERNOVA;
+        int head = 0;
 
-        var playerList = getObjectList(1);
+        var playerList = getObjectList(ObjectTypes.PLAYER);
         playerList.remove(0);
 
-        var supernovaBombList = getObjectList(9);
-
-        int radius = 100;
+        var supernovaBombList = getObjectList(ObjectTypes.SUPER_NOVA_BOMB);
 
         if (!playerList.isEmpty() && !supernovaBombList.isEmpty()) {
-            if (getDistanceBetween(playerList.get(0), supernovaBombList.get(0)) > radius) {
-                playerAction.action = PlayerActions.FORWARD;
-                playerAction.heading = 0;
+            if (getDistanceBetween(playerList.get(0), supernovaBombList.get(0)) > supernovaRadius) {
+                action = PlayerActions.FORWARD;
+                head = 0;
             }
         }
-        setPlayerAction(playerAction);
+        commandPlayer(action, head);
+    }
+
+    private int predictHead(GameObject projectile, GameObject player){
+
+        int projectile_speed = projectile.getSpeed();
+        int player_speed = player.getSpeed();
+        int player_heading = player.currentHeading;
+
+        var bot = getBot();
+
+        double distanceToPlayer = getDistanceBetween(bot, player);
+        double timeToPlayer = distanceToPlayer / projectile_speed;
+        double distanceToPlayerAfterTime = player_speed * timeToPlayer;
+
+        double x = player.getPosition().x + distanceToPlayerAfterTime * Math.cos(player_heading);
+        double y = player.getPosition().y + distanceToPlayerAfterTime * Math.sin(player_heading);
+
+        double heading = Math.atan2(y - bot.getPosition().y, x - bot.getPosition().x);
+
+        return (int) Math.toDegrees(heading);
     }
 
 }
