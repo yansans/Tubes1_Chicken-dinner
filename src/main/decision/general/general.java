@@ -29,7 +29,7 @@ public class general {
         return speed;
     }
 
-    public int distanceFromPlayerToProjectileTrajectory(GameObject projectile, GameObject player) {
+    public double distanceFromPlayerToProjectileTrajectory(GameObject projectile, GameObject player) {
         int jari_jari = player.getSize/2 + 1; // +1 karena pembagian di java dibulatkan kebawah
         Position projectile_position = projectile.getPosition(); 
         Position player_position = player.getPosition();
