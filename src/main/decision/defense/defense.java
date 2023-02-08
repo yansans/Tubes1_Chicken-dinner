@@ -9,6 +9,8 @@ public class defense {
     public double prio;
 
     public void getDefensePrio(GameObject player) {
+        // mendeteksi jika bot dekat dengan lintasan torpedo, regardless jumlah torpedo yang mendekatinya
+        // jika ada satu saja torpedo yang mendekati bot, maka bot akan mengeluarkan shield
         double min;
         int jari_jari = player.getSize/2 + 1; // +1 karena pembagian di java dibulatkan kebawah
         // melihat 
