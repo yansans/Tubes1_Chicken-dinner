@@ -2,6 +2,8 @@ package Services;
 
 import Enums.*;
 import Models.*;
+import decision.*;
+import decision.decisionmaker.*;
 
 import java.util.*;
 import java.util.stream.*;
@@ -34,20 +36,8 @@ public class BotService {
     }
 
     public void computeNextPlayerAction(PlayerAction playerAction) {
-        playerAction.action = PlayerActions.FORWARD;
-        playerAction.heading = new Random().nextInt(360);
-
-        if (!gameState.getGameObjects().isEmpty()) {
-            var foodList = gameState.getGameObjects()
-                    .stream().filter(item -> item.getGameObjectType() == ObjectTypes.FOOD)
-                    .sorted(Comparator
-                            .comparing(item -> getDistanceBetween(bot, item)))
-                    .collect(Collectors.toList());
-
-            playerAction.heading = getHeadingBetween(foodList.get(0));
-        }
-
-        this.playerAction = playerAction;
+        decisionmaker priority = new decisionmaker();
+        this.playerAction = priority.whatBotShouldDo(bot, gameState);
     }
 
     public GameState getGameState() {
