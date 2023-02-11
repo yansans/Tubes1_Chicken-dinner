@@ -41,7 +41,7 @@ public class decisionmaker {
                 command.heading = (player.currentHeading + 180) % 360;
             } else if (decision_kind_variation == 2) { // lari dari player lain
 
-            } else { // lari dari supernova
+            } else{ // lari dari supernova
                 // menjauh dari tempat supernova sekarang
                 var supernovalist = gameState.getGameObjects()
                 .stream().filter(item -> item.getGameObjectType() == ObjectTypes.SUPER_NOVA_BOMB)
@@ -50,7 +50,9 @@ public class decisionmaker {
 
                 command.action = PlayerActions.FORWARD;
                 command.heading = (objectHeading(supernovalist.get(0), player) + 180) % 360;
-            }
+            } 
+        } 
+
         }
     }
-}
+
