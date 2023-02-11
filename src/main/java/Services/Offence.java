@@ -39,6 +39,80 @@ public class Offence extends BotService {
         setPlayerAction(getPlayerAction());
     }
 
+    public int getPrioTorpedoes(){
+        // mendapatkan nilai prioritas untuk melakukan aksi torpedo
+        int prio = 0;
+        int max_distance = 50;
+        var bot = getBot();
+        int min_size = bot.getSize();
+
+        var playerListD = getObjectListDistance(ObjectTypes.PLAYER);
+        var playerListS = getObjectListSize(ObjectTypes.PLAYER);
+        playerListD.remove(bot);
+        playerListS.remove(bot);
+
+        // apabila player tidak jauh
+        if (getDistanceBetween(getBot(), playerListD.get(0)) <= max_distance) {
+            prio += 1;
+        // apabila player lebih besar dari size bot
+        } if (playerListS.get(0).getSize() > min_size){
+            prio += 1;
+        }
+
+        return prio;
+    }
+
+
+    public int getPrioSupernova(){
+        int prio = 0;
+        var bot = getBot();
+        int min_size = bot.getSize();
+        int mult = 10;
+        
+        var playerListS = getObjectListSize(ObjectTypes.PLAYER);
+        playerListS.remove(bot);
+
+        Collections.reverse(playerListS);
+
+        // apabila player lebih besar dari size bot
+        if (playerListS.get(0).getSize() > min_size){
+            prio += 1;
+        }
+        // apabila player lebih besar dari size bot * mult
+        if (playerListS.get(0).getSize() > min_size * mult){
+            prio += 1;
+        }
+        // ide lain liat player yang berkerumun
+
+        return prio;
+    }
+
+    public int getPrioEat(){
+        int prio = 0;
+        var bot = getBot();
+        int min_size = bot.getSize();
+        int min_distance = 50;
+
+        var playerListS = getObjectListSize(ObjectTypes.PLAYER);
+        playerListS.remove(bot);
+
+        // apabila player lebih kecil dari size bot
+        if (playerListS.get(0).getSize() < min_size){
+            prio += 1;
+            if (getDistanceBetween(bot, playerListS.get(0)) <= min_distance){
+                prio += 1;
+            }
+        }
+
+        Collections.reverse(playerListS);
+        // apabila player terbesar lebih kecil dari size bot
+        if (playerListS.get(0).getSize() < min_size){
+            prio += 10;
+        }
+
+        return prio;
+    }
+
     private List<GameObject> distanceFrom(GameObject object, ObjectTypes type){
         // membuat list gameobject tersusun terdekat dari suatu object
         var gameState = getGameState();
@@ -69,7 +143,6 @@ public class Offence extends BotService {
     private List<GameObject> getObjectListSize(ObjectTypes type){
         // membuat list gameobject tersusun dari yang terkecil 
         var gameState = getGameState();
-        var bot = getBot();
 
         var objectList = gameState.getGameObjects()
                 .stream().filter(item -> item.getGameObjectType() == type)
@@ -112,7 +185,7 @@ public class Offence extends BotService {
         var objectList = getObjectListDistance(object);
 
         if(object == ObjectTypes.PLAYER){
-            objectList.remove(0);
+            objectList.remove(getBot());
         }
 
         if (desc) {
@@ -137,7 +210,7 @@ public class Offence extends BotService {
         var objectList = getObjectListSize(object);
 
         if(object == ObjectTypes.PLAYER){
-            objectList.remove(0);
+            objectList.remove(getBot());
         }
 
         if (desc) {
@@ -174,7 +247,7 @@ public class Offence extends BotService {
         int head = 0;
 
         var playerList = getObjectListDistance(ObjectTypes.PLAYER);
-        playerList.remove(0);
+        playerList.remove(getBot());
 
         var supernovaBombList = getObjectListDistance(ObjectTypes.SUPER_NOVA_BOMB);
 
