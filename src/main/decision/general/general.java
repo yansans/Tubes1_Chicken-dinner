@@ -7,23 +7,24 @@ import java.util.stream.*;
 public class general {
     public Position getXandYspeed(GameObject projectile) {
         int heading = projectile.currentHeading % 360;
+        int object_speed = projectile.getSpeed();
         Position speed;
 
         if (heading >= 270) {
             heading = heading % 270;
-            speed.setX(60 * Math.sin(Math.toRadians(heading)));
-            speed.setY(60 * Math.cos(Math.toRadians(heading)));
+            speed.setX(object_speed * Math.sin(Math.toRadians(heading)));
+            speed.setY(object_speed * Math.cos(Math.toRadians(heading)));
         } else if (heading >= 180) {
             heading = heading % 180;
-            speed.setX(60 * Math.cos(Math.toRadians(heading)));
-            speed.setY(60 * Math.sin(Math.toRadians(heading)));
+            speed.setX(object_speed * Math.cos(Math.toRadians(heading)));
+            speed.setY(object_speed * Math.sin(Math.toRadians(heading)));
         } else if (heading >= 90) {
             heading = heading % 90;
-            speed.setX(60 * Math.sin(Math.toRadians(heading)));
-            speed.setY(60 * Math.cos(Math.toRadians(heading)));
+            speed.setX(object_speed * Math.sin(Math.toRadians(heading)));
+            speed.setY(object_speed * Math.cos(Math.toRadians(heading)));
         } else {
-            speed.setX(60 * Math.cos(Math.toRadians(heading)));
-            speed.setY(60 * Math.sin(Math.toRadians(heading)));
+            speed.setX(object_speed * Math.cos(Math.toRadians(heading)));
+            speed.setY(object_speed * Math.sin(Math.toRadians(heading)));
         }
         
         return speed;
@@ -45,5 +46,25 @@ public class general {
         distance -= Double.valueOf(jari_jari);
 
         return distance;
+    }
+
+    public double distanceFromPlayerToObject(GameObject object1, GameObject player) {
+        var triangleX = Math.abs(object1.getPosition().x - player.getPosition().x);
+        var triangleY = Math.abs(object1.getPosition().y - player.getPosition().y);
+        return Math.sqrt(triangleX * triangleX + triangleY * triangleY);
+    }
+
+    private int radToDegree(double v) {
+        return (int) (v * (180 / Math.PI));
+    }
+
+    public int objectHeading(GameObject object1, GameObject object2) {
+        // mencari derajat heading object2 agar bisa menuju object1
+        Position object1_position = object1.getPosition();
+        Position object2_position = object2.getPosition();
+
+        int direction = radToDegree(Math.atan2(object1_position.y - object2_position.y, object1_position.x - object2_position.x));
+
+        return (direction + 360) % 360;
     }
 }
