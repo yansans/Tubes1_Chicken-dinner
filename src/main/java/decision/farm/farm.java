@@ -28,17 +28,22 @@ public class farm {
 
         public double getNearestFood(GameObject player, GameState gameState){
                 var foodList = gameState.getGameObjects()
-                .stream().filter(item -> item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPERFOOD)
+                .stream().filter(item -> (item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPERFOOD))
                 .sorted(Comparator
                         .comparing(item -> general.distanceFromPlayerToObject(item, player)))
                 .collect(Collectors.toList());
-                return general.distanceFromPlayerToObject(foodList.get(0), player);
+                if(foodList.size() == 0){
+                        return 9999;
+                }else{
+                        return general.distanceFromPlayerToObject(foodList.get(0), player);
+                }
+                
         }
 
         public PlayerAction normalFarm(GameObject player, GameState gameState){
                 PlayerAction command = new PlayerAction();
                         var foodList = gameState.getGameObjects()
-                        .stream().filter(item -> item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPERFOOD)
+                        .stream().filter(item -> (item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPERFOOD))
                         .sorted(Comparator
                                 .comparing(item -> general.distanceFromPlayerToObject(item, player)))
                         .collect(Collectors.toList());
