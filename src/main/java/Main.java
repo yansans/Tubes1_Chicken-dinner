@@ -58,8 +58,7 @@ public class Main {
 
         Thread.sleep(1000);
         System.out.println("Registering with the runner...");
-        // Winner winner
-        hubConnection.send("Register", token, "Chicken dinner");
+        hubConnection.send("Register", token, "Coffee Bot");
 
         //This is a blocking call
         hubConnection.start().subscribe(() -> {

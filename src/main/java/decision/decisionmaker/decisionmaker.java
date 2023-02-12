@@ -1,24 +1,24 @@
-package decision.decisionmaker;
+package Decision.Decisionmaker;
 
 import Enums.*;
 import Models.*;
-import decision.general.*;
-import decision.defense.*;
-import decision.retreat.*;
-import decision.farm.*;
-// import farming dll nanti
 
 import java.util.*;
 import java.util.stream.*;
 
-public class decisionmaker {
+import Decision.Defense.*;
+import Decision.Farm.*;
+import Decision.General.*;
+import Decision.Retreat.*;
+
+public class Decisionmaker {
     public int decision_kind;
     public int decision_kind_variation;
     public double temp_prio;
 
-    public defense defense_prio;
-    public retreat retreat_prio;
-    public farm farm_prio;
+    public Defense defense_prio;
+    public Retreat retreat_prio;
+    public Farm farm_prio;
     // lanjutkan
 
     // masukkan perintah" yang sesuai
@@ -58,20 +58,20 @@ public class decisionmaker {
             } else if (decision_kind_variation == 2) { // lari dari player lain
                 var playerlist = gameState.getGameObjects()
                 .stream().filter(item -> item.getGameObjectType() == ObjectTypes.PLAYER)
-                .sorted(Comparator.comparing(item -> general.distanceFromPlayerToProjectileTrajectory(item, player)))
+                .sorted(Comparator.comparing(item -> General.distanceFromPlayerToProjectileTrajectory(item, player)))
                 .collect(Collectors.toList());
 
                 command.action = PlayerActions.FORWARD;
-                command.heading = (general.objectHeading(playerlist.get(0), player) + 180) % 360;           
+                command.heading = (General.objectHeading(playerlist.get(0), player) + 180) % 360;           
             } else{ // lari dari supernova
                 // menjauh dari tempat supernova sekarang
                 var supernovalist = gameState.getGameObjects()
                 .stream().filter(item -> item.getGameObjectType() == ObjectTypes.SUPERNOVABOMB)
-                .sorted(Comparator.comparing(item -> general.distanceFromPlayerToProjectileTrajectory(item, player)))
+                .sorted(Comparator.comparing(item -> General.distanceFromPlayerToProjectileTrajectory(item, player)))
                 .collect(Collectors.toList());
 
                 command.action = PlayerActions.FORWARD;
-                command.heading = (general.objectHeading(supernovalist.get(0), player) + 180) % 360;
+                command.heading = (General.objectHeading(supernovalist.get(0), player) + 180) % 360;
             } 
         }  
         return command;

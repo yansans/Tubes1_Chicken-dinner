@@ -1,13 +1,14 @@
-package decision.defense;
+package Decision.Defense;
 
 import Enums.*;
 import Models.*;
-import decision.general.*;
 
 import java.util.*;
 import java.util.stream.*;
 
-public class defense {
+import Decision.General.*;
+
+public class Defense {
     public double prio;
 
     public void getDefensePrio(GameObject player, GameState gameState) {
@@ -18,13 +19,13 @@ public class defense {
         // melihat 
         var torpedoList = gameState.getGameObjects()
             .stream().filter(item -> item.getGameObjectType() == ObjectTypes.TORPEDOSALVO)
-            .sorted(Comparator.comparing(item -> general.distanceFromPlayerToProjectileTrajectory(item, player) - jari_jari))       
+            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToProjectileTrajectory(item, player) - jari_jari))       
             .collect(Collectors.toList());
 
         if (torpedoList.size() == 0) {
             min = 100; // asumsi diurutkan membesar
         } else {
-            min = general.distanceFromPlayerToProjectileTrajectory(torpedoList.get(0), player);
+            min = General.distanceFromPlayerToProjectileTrajectory(torpedoList.get(0), player);
         }
 
         this.prio = min;

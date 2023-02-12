@@ -2,10 +2,12 @@ package Services;
 
 import Enums.*;
 import Models.*;
-import decision.decisionmaker.*;
 
 import java.util.*;
 import java.util.stream.*;
+
+import Decision.Decisionmaker.*;
+import Decision.Offence.*;
 
 public class BotService {
     private GameObject bot;
@@ -35,8 +37,10 @@ public class BotService {
     }
 
     public void computeNextPlayerAction(PlayerAction playerAction) {
-        decisionmaker priority = new decisionmaker();
-        this.playerAction = priority.whatBotShouldDo(bot, gameState);
+        Offence attack = new Offence();
+        
+        playerAction = attack.defaultAction(bot, gameState);
+        this.playerAction = playerAction;
     }
 
     public GameState getGameState() {

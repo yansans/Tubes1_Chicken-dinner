@@ -1,4 +1,4 @@
-package decision.general;
+package Decision.General;
 
 import Enums.*;
 import Models.*;
@@ -6,7 +6,7 @@ import Models.*;
 import java.util.*;
 import java.util.stream.*;
 
-public class general {
+public class General {
     public static Position getXandYspeed(GameObject projectile) {
         int heading = projectile.currentHeading % 360;
         int object_speed = projectile.getSpeed();
@@ -75,4 +75,43 @@ public class general {
 
         return (direction + 360) % 360;
     }
+
+    public static List<GameObject> distanceFrom(GameObject object, ObjectTypes type, GameState gameState){
+        // membuat list gameobject tersusun terdekat dari suatu object        
+        var orderedList = gameState.getGameObjects()
+                .stream().filter(item -> item.getGameObjectType() == type)
+                .sorted(Comparator
+                        .comparing(item -> General.distanceFromPlayerToObject(object, item)))
+                .collect(Collectors.toList());
+
+        return orderedList;
+    }
+    
+    public static List<GameObject> getObjectListDistance(ObjectTypes type, GameState gameState, GameObject bot){
+        // membuat list gameobject tersusun dari yang terdekat terhadap player
+        var objectList = gameState.getGameObjects()
+                .stream().filter(item -> item.getGameObjectType() == type)
+                .sorted(Comparator
+                        .comparing(item -> General.distanceFromPlayerToObject(bot, item)))
+                .collect(Collectors.toList());
+
+        return objectList;
+    }
+
+    public static List<GameObject> getObjectListSize(ObjectTypes type, GameState gameState, GameObject bot){
+        // membuat list gameobject tersusun dari yang terkecil 
+        var objectList = gameState.getGameObjects()
+                .stream().filter(item -> item.getGameObjectType() == type)
+                .sorted(Comparator
+                        .comparing(item -> item.getSize()))
+                .collect(Collectors.toList());
+
+        return objectList;
+    }
+
+    public static int tickFromDistance(GameObject projectile, GameObject player){
+        // menghitung tick yang dibutuhkan projectile untuk menuju player
+        return (int) General.distanceFromPlayerToObject(projectile, player) / projectile.getSpeed();
+    }
+
 }
