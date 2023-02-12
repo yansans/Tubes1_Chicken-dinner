@@ -17,7 +17,7 @@ public class defense {
         int jari_jari = player.getSize()/2 + 1; // +1 karena pembagian di java dibulatkan kebawah
         // melihat 
         var torpedoList = gameState.getGameObjects()
-            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.TORPEDO_SALVO)
+            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.TORPEDOSALVO)
             .sorted(Comparator.comparing(item -> general.distanceFromPlayerToProjectileTrajectory(item, player) - jari_jari))       
             .collect(Collectors.toList());
 

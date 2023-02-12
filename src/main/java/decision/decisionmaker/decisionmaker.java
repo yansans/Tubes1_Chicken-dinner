@@ -49,7 +49,7 @@ public class decisionmaker {
         PlayerAction command = new PlayerAction();
 
         if (this.decision_kind == 1) { // anggap 1 adalah defense
-            command.action = PlayerActions.USE_SHIELD;
+            command.action = PlayerActions.USESHIELD;
         } else if (this.decision_kind == 2) { // anggap 2 adalah retreat
             if (decision_kind_variation == 1) { // lari dari gas
                 // putar balik
@@ -60,7 +60,7 @@ public class decisionmaker {
             } else{ // lari dari supernova
                 // menjauh dari tempat supernova sekarang
                 var supernovalist = gameState.getGameObjects()
-                .stream().filter(item -> item.getGameObjectType() == ObjectTypes.SUPER_NOVA_BOMB)
+                .stream().filter(item -> item.getGameObjectType() == ObjectTypes.SUPERNOVABOMB)
                 .sorted(Comparator.comparing(item -> general.distanceFromPlayerToProjectileTrajectory(item, player)))
                 .collect(Collectors.toList());
 

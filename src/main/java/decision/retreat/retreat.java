@@ -16,7 +16,7 @@ public class retreat {
         // untuk gas cloud
         double gas_prio;
         var gasList = gameState.getGameObjects()
-            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.GAS_CLOUD)
+            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.GASCLOUD)
             .sorted(Comparator.comparing(item -> general.distanceFromPlayerToObject(item, player)))       
             .collect(Collectors.toList());
         
@@ -34,7 +34,7 @@ public class retreat {
         // untuk kabur dari supernova
         double supernova_prio;
         var supernovalist = gameState.getGameObjects()
-            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.SUPER_NOVA_BOMB)
+            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.SUPERNOVABOMB)
             .sorted(Comparator.comparing(item -> general.distanceFromPlayerToProjectileTrajectory(item, player)))
             .collect(Collectors.toList());
 

@@ -28,7 +28,7 @@ public class farm {
 
         public double getNearestFood(GameObject player, GameState gameState){
                 var foodList = gameState.getGameObjects()
-                .stream().filter(item -> item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPER_FOOD)
+                .stream().filter(item -> item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPERFOOD)
                 .sorted(Comparator
                         .comparing(item -> general.distanceFromPlayerToObject(item, player)))
                 .collect(Collectors.toList());
@@ -38,7 +38,7 @@ public class farm {
         public PlayerAction normalFarm(GameObject player, GameState gameState){
                 PlayerAction command = new PlayerAction();
                         var foodList = gameState.getGameObjects()
-                        .stream().filter(item -> item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPER_FOOD)
+                        .stream().filter(item -> item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPERFOOD)
                         .sorted(Comparator
                                 .comparing(item -> general.distanceFromPlayerToObject(item, player)))
                         .collect(Collectors.toList());
@@ -60,7 +60,7 @@ public class farm {
             
             PlayerAction command = new PlayerAction();
             var foodList = gameState.getGameObjects()
-            .stream().filter((item -> item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPER_FOOD && 
+            .stream().filter((item -> item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPERFOOD && 
             Math.cos(temp)<(Math.pow(general.distanceFromPlayerToObject(item, player),2)+Math.pow(b, 2)-Math.pow(general.distanceFromPlayerToLocation(x, item),2))/(2*b*general.distanceFromPlayerToObject(item, player))))
             .sorted(Comparator
                     .comparing(item -> general.distanceFromPlayerToObject(item, player)))
