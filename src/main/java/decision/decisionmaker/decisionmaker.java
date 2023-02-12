@@ -56,7 +56,13 @@ public class decisionmaker {
                 command.action = PlayerActions.FORWARD;
                 command.heading = (player.currentHeading + 180) % 360;
             } else if (decision_kind_variation == 2) { // lari dari player lain
+                var playerlist = gameState.getGameObjects()
+                .stream().filter(item -> item.getGameObjectType() == ObjectTypes.PLAYER)
+                .sorted(Comparator.comparing(item -> general.distanceFromPlayerToProjectileTrajectory(item, player)))
+                .collect(Collectors.toList());
 
+                command.action = PlayerActions.FORWARD;
+                command.heading = (general.objectHeading(playerlist.get(0), player) + 180) % 360;           
             } else{ // lari dari supernova
                 // menjauh dari tempat supernova sekarang
                 var supernovalist = gameState.getGameObjects()
