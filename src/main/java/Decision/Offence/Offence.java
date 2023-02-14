@@ -15,7 +15,7 @@ public class Offence {
     public double prio;
     private double kind;
     private double var;
-    private int fuel = 5;
+    private static int fuel;
 
     private GameObject bot;
     private GameState gameState;
@@ -23,6 +23,7 @@ public class Offence {
     public Offence(GameObject bot, GameState gameState){
         this.bot = bot;
         this.gameState = gameState;
+        fuel += fuel;
     }
 
     public void getPrioGeneral(){
@@ -34,17 +35,18 @@ public class Offence {
         var enemy = ObjectTypes.PLAYER;
         var action = PlayerActions.FIRETORPEDOES;
         int min_size = 30;
-        if (bot.size < min_size || fuel < 0){
+        System.out.println("fuel " + fuel);
+        if (bot.size < min_size || fuel <= 0){
             action = PlayerActions.FORWARD;
             enemy = ObjectTypes.FOOD;
-            fuel += 2;
+            fuel += bot.getSize() / 10;
         }
         if (kind == 2){
             action = PlayerActions.FIRESUPERNOVA;
         } else if (kind == 3){
             action = PlayerActions.FIRETELEPORT;
         }
-        fuel--;
+        fuel -= 5;
         return basicAttackDistance(action, enemy, false);
     }
 
@@ -73,6 +75,10 @@ public class Offence {
         playerListD.remove(bot);
         playerListS.remove(bot);
 
+        if (playerListD.size() == 0){
+            return 0;
+        }
+
         // apabila player tidak jauh
         if (General.distanceFromPlayerToObject(bot, playerListD.get(0)) <= max_distance) {
             prio += 5;
@@ -95,6 +101,10 @@ public class Offence {
 
         Collections.reverse(playerListS);
 
+        if (playerListS.size() == 0){
+            return 0;
+        }
+
         // apabila player lebih besar dari size bot
         if (playerListS.get(0).getSize() > min_size){
             prio += 5;
@@ -115,6 +125,10 @@ public class Offence {
 
         var playerListS = General.getObjectListSize(ObjectTypes.PLAYER, gameState, bot);
         playerListS.remove(bot);
+
+        if (playerListS.size() == 0){
+            return 0;
+        }
 
         // apabila player lebih kecil dari size bot
         if (playerListS.get(0).getSize() < min_size){

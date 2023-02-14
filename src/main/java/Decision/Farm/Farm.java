@@ -25,7 +25,6 @@ public class Farm {
                 double time = (getNearestFood(player, gameState)-player.size)/player.getSpeed();
                 Integer tick = 60;
                 this.prio = 100-(time/tick)*20;
-
         }
 
         public double getNearestFood(GameObject player, GameState gameState){

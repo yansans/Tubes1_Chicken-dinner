@@ -15,22 +15,26 @@ public class Retreat {
     public void getRetreatPrio(GameObject player, GameState gameState) {
         // priority untuk kabur dari player lebih penting daripada menghindari gas cloud
         // untuk gas cloud
-        double gas_prio;
+        double gas_prio = 100;
         var gasList = gameState.getGameObjects()
             .stream().filter(item -> item.getGameObjectType() == ObjectTypes.GASCLOUD)
             .sorted(Comparator.comparing(item -> General.distanceFromPlayerToObject(item, player)))       
             .collect(Collectors.toList());
-        
-        gas_prio = General.distanceFromPlayerToProjectileTrajectory(gasList.get(0), player) * 3; // skalanya dapat berubah
+
+        if (!gasList.isEmpty()){
+            gas_prio = General.distanceFromPlayerToProjectileTrajectory(gasList.get(0), player) * 3; // skalanya dapat berubah
+        }
 
         // untuk kabur dari player
-        double run_prio;
+        double run_prio = 100;
         var playerlist = gameState.getGameObjects()
             .stream().filter(item -> item.getGameObjectType() == ObjectTypes.PLAYER)
             .sorted(Comparator.comparing(item -> General.distanceFromPlayerToObject(item, player)))
             .collect(Collectors.toList());
-        
-        run_prio = General.distanceFromPlayerToProjectileTrajectory(playerlist.get(0), player);
+
+        if (!playerlist.isEmpty()){
+            run_prio = General.distanceFromPlayerToProjectileTrajectory(playerlist.get(0), player);
+        }
 
         // untuk kabur dari supernova
         double supernova_prio;
