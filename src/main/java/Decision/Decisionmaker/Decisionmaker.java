@@ -20,7 +20,7 @@ public class Decisionmaker {
     public Defense defense_prio;
     public Retreat retreat_prio;
     public Farm farm_prio;
-    public Offence offence_prio = new Offence();
+    public Offence offence_prio;
     // lanjutkan
 
     // masukkan perintah" yang sesuai
@@ -48,6 +48,7 @@ public class Decisionmaker {
         // if (this.temp_prio > this.offence_prio.prio){
         //     this.decision_kind = 4;
         // }
+        this.offence_prio = new Offence(player, gameState);
         this.decision_kind = 4;
     }
 
@@ -71,7 +72,7 @@ public class Decisionmaker {
                 command.action = PlayerActions.FORWARD;
                 command.heading = (General.objectHeading(playerlist.get(0), player) + 180) % 360;           
             } else if (decision_kind_variation == 4){
-                return offence_prio.doOffence(player, gameState);
+                return offence_prio.doOffence();
             }
             else{ // lari dari supernova
                 // menjauh dari tempat supernova sekarang

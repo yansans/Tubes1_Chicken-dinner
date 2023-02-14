@@ -40,8 +40,8 @@ public class BotService {
         // Decisionmaker decision = new Decisionmaker();
         // playerAction = decision.whatBotShouldDo(bot, gameState);
         // setPlayerAction(playerAction);
-        Offence a = new Offence();
-        playerAction = a.doOffence(bot, gameState);
+        Offence a = new Offence(getBot(), getGameState());
+        playerAction = a.doOffence();
         setPlayerAction(playerAction);
     }
 
