@@ -10,6 +10,7 @@ import Decision.Defense.*;
 import Decision.Farm.*;
 import Decision.General.*;
 import Decision.Retreat.*;
+import Decision.Offence.*;
 
 public class Decisionmaker {
     public int decision_kind;
@@ -19,29 +20,35 @@ public class Decisionmaker {
     public Defense defense_prio;
     public Retreat retreat_prio;
     public Farm farm_prio;
+    public Offence offence_prio = new Offence();
     // lanjutkan
 
     // masukkan perintah" yang sesuai
 
     // generalisasi
     public void findPriority(GameObject player, GameState gameState) {
-        this.defense_prio.getDefensePrio(player, gameState);
-        this.decision_kind = 1;
-        this.temp_prio = defense_prio.prio;
+        // this.defense_prio.getDefensePrio(player, gameState);
+        // this.decision_kind = 1;
+        // this.temp_prio = defense_prio.prio;
 
-        this.retreat_prio.getRetreatPrio(player, gameState);
-        if (this.temp_prio > this.retreat_prio.prio) {
-            this.decision_kind = 2;
-            this.decision_kind_variation = this.retreat_prio.kind;
-            this.temp_prio = retreat_prio.prio;
-        }
+        // this.retreat_prio.getRetreatPrio(player, gameState);
+        // if (this.temp_prio > this.retreat_prio.prio) {
+        //     this.decision_kind = 2;
+        //     this.decision_kind_variation = this.retreat_prio.kind;
+        //     this.temp_prio = retreat_prio.prio;
+        // }
 
-        this.farm_prio.getFarmPrio(player, gameState);
-        if (this.temp_prio > this.farm_prio.prio) {
-            this.decision_kind = 3;
-            this.temp_prio = farm_prio.prio;
-        }
+        // this.farm_prio.getFarmPrio(player, gameState);
+        // if (this.temp_prio > this.farm_prio.prio) {
+        //     this.decision_kind = 3;
+        //     this.temp_prio = farm_prio.prio;
+        // }
 
+        // this.offence_prio.getPrioGeneral(player, gameState);
+        // if (this.temp_prio > this.offence_prio.prio){
+        //     this.decision_kind = 4;
+        // }
+        this.decision_kind = 4;
     }
 
     public PlayerAction whatBotShouldDo(GameObject player, GameState gameState) {
@@ -63,7 +70,10 @@ public class Decisionmaker {
 
                 command.action = PlayerActions.FORWARD;
                 command.heading = (General.objectHeading(playerlist.get(0), player) + 180) % 360;           
-            } else{ // lari dari supernova
+            } else if (decision_kind_variation == 4){
+                return offence_prio.doOffence(player, gameState);
+            }
+            else{ // lari dari supernova
                 // menjauh dari tempat supernova sekarang
                 var supernovalist = gameState.getGameObjects()
                 .stream().filter(item -> item.getGameObjectType() == ObjectTypes.SUPERNOVABOMB)

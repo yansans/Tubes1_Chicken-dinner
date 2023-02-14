@@ -37,10 +37,12 @@ public class BotService {
     }
 
     public void computeNextPlayerAction(PlayerAction playerAction) {
-        Offence attack = new Offence();
-        
-        playerAction = attack.defaultAction(bot, gameState);
-        this.playerAction = playerAction;
+        // Decisionmaker decision = new Decisionmaker();
+        // playerAction = decision.whatBotShouldDo(bot, gameState);
+        // setPlayerAction(playerAction);
+        Offence a = new Offence();
+        playerAction = a.doOffence(bot, gameState);
+        setPlayerAction(playerAction);
     }
 
     public GameState getGameState() {

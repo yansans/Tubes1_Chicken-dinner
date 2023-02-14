@@ -12,8 +12,35 @@ public class Offence {
 
     private int supernovaSize = 10;
     private double supernovaRadius = 0.25 * supernovaSize;
+    public double prio;
+    private double kind;
+    private double var;
+    private int fuel = 5;
 
-    public double getprioOffence(GameObject bot, GameState gameState){
+    public void getPrioGeneral(GameObject bot, GameState gameState){
+        double max = 10;
+        prio = getPrioType(bot, gameState) < 3 ? 0.0 : max;
+    }
+
+    public PlayerAction doOffence(GameObject bot, GameState gameState){
+        var enemy = ObjectTypes.PLAYER;
+        var action = PlayerActions.FIRETORPEDOES;
+        int min_size = 30;
+        if (bot.size < min_size || fuel < 0){
+            action = PlayerActions.FORWARD;
+            enemy = ObjectTypes.FOOD;
+            fuel += 2;
+        }
+        if (kind == 2){
+            action = PlayerActions.FIRESUPERNOVA;
+        } else if (kind == 3){
+            action = PlayerActions.FIRETELEPORT;
+        }
+        fuel--;
+        return basicAttackDistance(action, enemy, false, gameState, bot);
+    }
+
+    public double getPrioType(GameObject bot, GameState gameState){
         double max = 3;
         double all_prio = 0;
 
@@ -21,28 +48,10 @@ public class Offence {
         all_prio += getPrioSupernova(bot, gameState);
         all_prio += getPrioEat(bot, gameState);
 
-        int kind = (int) all_prio / 10;
-        int var = (int) all_prio % 10;
+        kind = (int) all_prio / 10;
+        var = (int) all_prio % 10;
 
-        if (kind == 0) {
-            return max;
-        } else if (kind == 1){
-            if (var == 0){
-                return 2;
-            } else {
-                return 1.5;
-            }
-        } else if (kind == 2){
-            if (var == 0){
-                return 1;
-            } else if (var >= 5) {
-                return 0.5;
-            } else {
-                return 0.25;
-            }
-        } else {
-            return 0;
-        }
+        return max - kind - var;
     }
     
     public double getPrioTorpedoes(GameObject bot, GameState gameState){
@@ -119,10 +128,10 @@ public class Offence {
     public PlayerAction defaultAction(GameObject bot, GameState gameState){
         // return playeraction default yaitu Forward ke head makanan atau 0
         var playerAction = new PlayerAction(); 
-        var command = PlayerActions.FORWARD;
+        var command = PlayerActions.STOP;
         int head = 0;
 
-        var foodList = General.getObjectListDistance(ObjectTypes.PLAYER, gameState, bot);
+        var foodList = General.getObjectListDistance(ObjectTypes.FOOD, gameState, bot);
 
         System.out.print("[");
         for(Object it : foodList) {
@@ -151,13 +160,6 @@ public class Offence {
         if(object == ObjectTypes.PLAYER){
             objectList.remove(bot);
         }
-
-        // System.out.print("[");
-        // for(Object it : objectList) {
-        //     System.out.print(it.toString() + ", ");
-        // }
-        // System.out.print("]");
-
 
         if (desc) {
             Collections.reverse(objectList);

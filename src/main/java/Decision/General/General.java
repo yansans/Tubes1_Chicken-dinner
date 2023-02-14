@@ -77,8 +77,14 @@ public class General {
     }
 
     public static List<GameObject> distanceFrom(GameObject object, ObjectTypes type, GameState gameState){
-        // membuat list gameobject tersusun terdekat dari suatu object        
-        var orderedList = gameState.getGameObjects()
+        // membuat list gameobject tersusun terdekat dari suatu object    
+        List<GameObject> listObject;
+        if (type == ObjectTypes.PLAYER){
+            listObject = gameState.getPlayerGameObjects();
+        } else {
+            listObject = gameState.getGameObjects();
+        }
+        var orderedList = listObject
                 .stream().filter(item -> item.getGameObjectType() == type)
                 .sorted(Comparator
                         .comparing(item -> General.distanceFromPlayerToObject(object, item)))
@@ -89,24 +95,36 @@ public class General {
     
     public static List<GameObject> getObjectListDistance(ObjectTypes type, GameState gameState, GameObject bot){
         // membuat list gameobject tersusun dari yang terdekat terhadap player
-        var objectList = gameState.getGameObjects()
+        List<GameObject> listObject;
+        if (type == ObjectTypes.PLAYER){
+            listObject = gameState.getPlayerGameObjects();
+        } else {
+            listObject = gameState.getGameObjects();
+        }
+        var orderedList = listObject
                 .stream().filter(item -> item.getGameObjectType() == type)
                 .sorted(Comparator
                         .comparing(item -> General.distanceFromPlayerToObject(bot, item)))
                 .collect(Collectors.toList());
 
-        return objectList;
+        return orderedList;
     }
 
     public static List<GameObject> getObjectListSize(ObjectTypes type, GameState gameState, GameObject bot){
         // membuat list gameobject tersusun dari yang terkecil 
-        var objectList = gameState.getGameObjects()
+        List<GameObject> listObject;
+        if (type == ObjectTypes.PLAYER){
+            listObject = gameState.getPlayerGameObjects();
+        } else {
+            listObject = gameState.getGameObjects();
+        }
+        var orderedList = listObject
                 .stream().filter(item -> item.getGameObjectType() == type)
                 .sorted(Comparator
                         .comparing(item -> item.getSize()))
                 .collect(Collectors.toList());
 
-        return objectList;
+        return orderedList;
     }
 
     public static int tickFromDistance(GameObject projectile, GameObject player){
