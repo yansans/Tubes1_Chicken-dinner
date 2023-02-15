@@ -35,41 +35,65 @@ public class GameObject {
   public UUID getId() {
     return id;
   }
-
+ 
   public void setId(UUID id) {
     this.id = id;
   }
-
+ 
   public int getSize() {
     return size;
   }
-
+ 
   public void setSize(int size) {
     this.size = size;
   }
-
+ 
   public int getSpeed() {
     return speed;
   }
-
+ 
   public void setSpeed(int speed) {
     this.speed = speed;
   }
-
+ 
   public Position getPosition() {
     return position;
   }
-
+ 
   public void setPosition(Position position) {
     this.position = position;
   }
-
+ 
+  public Integer getEffect(){
+    return effect;
+  }
+ 
   public ObjectTypes getGameObjectType() {
     return gameObjectType;
   }
-
+ 
   public void setGameObjectType(ObjectTypes gameObjectType) {
     this.gameObjectType = gameObjectType;
+  }
+ 
+  public Integer getTorpedoSalvoCount(){
+    return this.torpedoSalvoCount;
+  }
+ 
+  public Integer getTeleporterCount(){
+    return this.teleporterCount;
+  }
+ 
+  public Integer getCurrHeading(){
+    return this.currentHeading;
+  }
+ 
+  public Integer getTeleporterAngle(){
+    return this.teleporterAngle;
+  }
+  
+  public void setTeleporterAngle(Integer teleporterAngle) {
+    this.teleporterAngle = teleporterAngle;
   }
 
   public static GameObject FromStateList(UUID id, List<Integer> stateList)
