@@ -96,6 +96,20 @@ public class Decisionmaker {
                 command.heading = (General.objectHeading(supernovalist.get(0), player) + 180) % 360;
             } 
             return command;
+        }else if(this.decision_kind==3){//Farm
+            Farm.normalFarm(command, player, gameState);
+            /* ADV
+            if(retreat_prio.prio<farm_prio.prio-10){
+                var playerlist = gameState.getGameObjects()
+                .stream().filter(item -> item.getGameObjectType() == ObjectTypes.PLAYER)
+                .sorted(Comparator.comparing(item -> General.distanceFromPlayerToProjectileTrajectory(item, player)))
+                .collect(Collectors.toList());
+                
+                Farm.farmInCone(command, );
+            }
+            else{
+                Farm.normalFarm(command, player, gameState);
+            }*/
         } else if (decision_kind == 4){
             return offence_prio.doOffence();
         }

@@ -24,8 +24,13 @@ public class Farm {
                 //A bit of suggestion, subtract farm priority with other priority
                 double time = (getNearestFood(player, gameState)-player.size)/player.getSpeed();
                 Integer tick = 60;
-                this.prio = 100-(time/tick)*20;
+                var temp = General.getObjectListDistance(ObjectTypes.PLAYER, gameState, player);
+                /*Get Nearest Player Priority */ 
+                if(temp.size()<=1){this.prio = time/tick*40;}
+                else{this.prio = time/tick*25;}
+                
         }
+
 
         public double getNearestFood(GameObject player, GameState gameState){
                 var foodList = gameState.getGameObjects()
@@ -41,7 +46,7 @@ public class Farm {
                 
         }
 
-        public PlayerAction normalFarm(GameObject player, GameState gameState){
+        public static void normalFarm(PlayerAction command1, GameObject player, GameState gameState){
                 PlayerAction command = new PlayerAction();
                         var foodList = gameState.getGameObjects()
                         .stream().filter(item -> (item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPERFOOD))
@@ -50,7 +55,7 @@ public class Farm {
                         .collect(Collectors.toList());
                         command.heading = General.objectHeading(foodList.get(0), player);
                         command.setAction(PlayerActions.FORWARD);
-                return command;
+                command1 = command;
         }
 
         public PlayerAction farmInCone(GameObject player, GameState gameState, Position x, int cone){
