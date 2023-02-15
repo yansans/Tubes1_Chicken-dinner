@@ -1,0 +1,16 @@
+Decision\Defense\Defense.class
+Decision\Offence\Offence.class
+Enums\ObjectTypes.class
+Models\PlayerAction.class
+Models\GameObject.class
+Main.class
+Decision\Retreat\Retreat.class
+Enums\PlayerActions.class
+Decision\Decisionmaker\Decisionmaker.class
+Models\GameState.class
+Services\BotService.class
+Decision\General\General.class
+Models\GameStateDto.class
+Decision\Farm\Farm.class
+Models\Position.class
+Models\World.class
