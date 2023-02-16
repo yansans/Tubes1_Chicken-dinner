@@ -11,12 +11,12 @@ import Decision.Farm.*;
 import Decision.General.*;
 import Decision.Retreat.*;
 import Decision.Offence.*;
-
+import Decision.Teleporter.*;
 public class Decisionmaker {
     public int decision_kind;
     public int decision_kind_variation;
     public double temp_prio;
-
+    public teleporter teleporter_prio;
     public Defense defense_prio;
     public Retreat retreat_prio;
     public Farm farm_prio;
@@ -59,7 +59,13 @@ public class Decisionmaker {
         offence_prio.getPrioGeneral();
         if (temp_prio > offence_prio.prio){
             decision_kind = 4;
+            temp_prio = offence_prio.prio;
         }
+        teleporter_prio.getTeleOffPrio(gameState, player);
+        if(temp_prio>teleporter_prio.teleOffPrio){
+            decision_kind = 5;
+        }
+        
     }
 
     public PlayerAction whatBotShouldDo() {
@@ -87,6 +93,8 @@ public class Decisionmaker {
             }*/
         } else if (decision_kind == 4){
             return offence_prio.doOffence();
+        } else if(decision_kind ==5){
+            return teleporter_prio.doTeleport(gameState, player);
         }
         System.out.println("end of function ");
         return command;
