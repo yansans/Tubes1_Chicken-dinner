@@ -260,6 +260,28 @@ public class Offence {
         return playerAction;
     }
 
+    public PlayerAction chasePlayer(GameState gameState){
+        // meledakan supernova jika player memasuki radius ledakan
+        PlayerAction playerAction = new PlayerAction();
+
+        var playerlist = gameState.getGameObjects()
+            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.PLAYER & item.getSize() <= 0.75*bot.getSize())
+            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToObject(item, bot)))
+            .collect(Collectors.toList());
+
+        if (bot.getEffect() == 1 || bot.getEffect() == 3 || bot.getEffect() == 5 || bot.getEffect() == 7) {
+            // ketika afterburner telah dihidupkan
+            playerAction.setAction(PlayerActions.FORWARD);
+            playerAction.setHeading(General.objectHeading(playerlist.get(1), bot));
+        } else {
+            // hidupkan afterburner untuk mengejar
+            playerAction.setAction(PlayerActions.STARTAFTERBURNER);
+            playerAction.setHeading(General.objectHeading(playerlist.get(1), bot));
+        }
+
+        return playerAction;
+    }
+
     // private int predictHead(GameObject projectile, GameObject player){
     //     // memprediksi heading yang dibutuhkan untuk menembak ke tempat player akan bergerak
 

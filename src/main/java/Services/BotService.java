@@ -37,9 +37,11 @@ public class BotService {
     }
 
     public void computeNextPlayerAction(PlayerAction playerAction) {
-        Decisionmaker decision = new Decisionmaker(getBot(), getGameState());
-        playerAction = decision.whatBotShouldDo();
-        setPlayerAction(playerAction);
+        if (!gameState.getGameObjects().isEmpty()) {
+            Decisionmaker decision = new Decisionmaker(getBot(), getGameState());
+            playerAction = decision.whatBotShouldDo();
+            setPlayerAction(playerAction);
+        }
     }
 
     public GameState getGameState() {
