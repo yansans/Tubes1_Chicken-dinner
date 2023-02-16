@@ -17,7 +17,7 @@ public class teleporter {
         //size checking and num of tele
         List<GameObject> playerList = General.getObjectListSize(ObjectTypes.PLAYER, State, bot);
         if(playerList.size()!=0){
-            if(bot.getSize()>playerList.get(0).getSize()+acceptableDiff &&bot.getSize()>minSizeTel &&bot.getTeleporterCount()>0){
+            if(bot.getSize()>playerList.get(0).getSize()+acceptableDiff*3 &&bot.getSize()>minSizeTel &&bot.getTeleporterCount()>0){
                 teleOffPrio = 0;
             }else{
                 if(checkTeleport(State,bot) == 1){
@@ -67,19 +67,19 @@ public class teleporter {
     }
     public PlayerAction doTeleport(GameState gameState, GameObject bot){
         List<GameObject> playerList = General.getObjectListSize(ObjectTypes.PLAYER, gameState, bot);
-        PlayerAction command;
+        PlayerAction commands;
         switch(checkTeleport(gameState, bot)){
             case 2:
-                command.setHeading(General.objectHeading(playerList.get(0), bot));
-                command.setAction(PlayerActions.FIRETELEPORT);
+                commands.setHeading(General.objectHeading(playerList.get(0), bot));
+                commands.setAction(PlayerActions.FIRETELEPORT);
                 break;
             case 1:
-                command.setAction(PlayerActions.TELEPORT);
+                commands.setAction(PlayerActions.TELEPORT);
                 break;
             case 0:
-                command.setAction(PlayerActions.TELEPORT);
+                commands.setAction(PlayerActions.TELEPORT);
                 break;
         }
-        return command;
+        return commands;
     }
 } 
