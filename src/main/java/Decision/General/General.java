@@ -71,7 +71,16 @@ public class General {
         Position object1_position = object1.getPosition();
         Position object2_position = object2.getPosition();
 
-        int direction = radToDegree(Math.atan2(object1_position.y - object2_position.y, object1_position.x - object2_position.x));
+        int direction = radToDegree(Math.atan2(object1_position.getY() - object2_position.getY(), object1_position.getX() - object2_position.getX()));
+
+        return (direction + 360) % 360;
+    }
+
+    public static int objectHeadingtoPoint(int x, int y, GameObject object2) {
+        // mencari derajat heading object2 agar bisa menuju object1
+        Position object2_position = object2.getPosition();
+
+        int direction = radToDegree(Math.atan2(y - object2_position.getY(), x - object2_position.getX()));
 
         return (direction + 360) % 360;
     }
@@ -132,4 +141,37 @@ public class General {
         return (int) General.distanceFromPlayerToObject(projectile, player) / projectile.getSpeed();
     }
 
+    public static boolean isItHeadingTowards(GameObject object1, GameObject object2) {
+        int heading = object1.currentHeading % 360;
+        int x = object2.getPosition().getX();
+        int y = object2.getPosition().getY();
+        int x2 = object2.getPosition().getX();
+        int y2 = object2.getPosition().getY();
+
+        if (heading >= 270) {
+            if (x2 >= x & y2 <= y) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (heading >= 180) {
+            if (x2 <= x & y2 <= y) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (heading >= 90) {
+            if (x2 <= x & y2 >= y) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (x2 >= x & y2 >= y) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 }

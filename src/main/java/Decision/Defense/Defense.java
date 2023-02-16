@@ -11,15 +11,22 @@ import Decision.General.*;
 public class Defense {
     public double prio;
 
+    private GameObject bot;
+    private GameState gameState;
+
+    public Defense(GameObject player, GameState gameState) {
+        this.bot = player;
+        this.gameState = gameState;
+    }
+
     public void getDefensePrio(GameObject player, GameState gameState) {
         // mendeteksi jika bot dekat dengan lintasan torpedo, regardless jumlah torpedo yang mendekatinya
         // jika ada satu saja torpedo yang mendekati bot, maka bot akan mengeluarkan shield
         double min;
-        int jari_jari = player.getSize()/2 + 1; // +1 karena pembagian di java dibulatkan kebawah
         // melihat 
         var torpedoList = gameState.getGameObjects()
-            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.TORPEDOSALVO)
-            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToProjectileTrajectory(item, player) - jari_jari))       
+            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.TORPEDOSALVO & General.isItHeadingTowards(item, player))
+            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToProjectileTrajectory(item, player)))       
             .collect(Collectors.toList());
 
         if (torpedoList.size() == 0) {
@@ -29,5 +36,24 @@ public class Defense {
         }
 
         this.prio = min;
+   }
+
+    public PlayerAction actionDefense() {
+        PlayerAction playerAction = new PlayerAction();
+        
+        if (bot.getShieldCount() != 0) {
+            playerAction.action = PlayerActions.USESHIELD;
+            playerAction.heading = 0;
+        } else {
+            var torpedoList = gameState.getGameObjects()
+            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.TORPEDOSALVO & General.isItHeadingTowards(item, bot))
+            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToProjectileTrajectory(item, bot)))       
+            .collect(Collectors.toList());
+
+            playerAction.action = PlayerActions.FORWARD;
+            playerAction.heading = (General.objectHeading(torpedoList.get(0), bot) + 180) % 360;
+        }
+
+        return playerAction;
     }
 }

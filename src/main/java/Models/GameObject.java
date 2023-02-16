@@ -87,7 +87,10 @@ public class GameObject {
   public Integer getCurrHeading(){
     return this.currentHeading;
   }
- 
+
+  public Integer getShieldCount(){
+    return this.shieldCount;
+  }
   public Integer getTeleporterAngle(){
     return this.teleporterAngle;
   }
