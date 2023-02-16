@@ -7,46 +7,42 @@ import java.util.*;
 import java.util.stream.*;
 
 public class General {
-    public static Position getXandYspeed(GameObject projectile) {
-        int heading = projectile.currentHeading % 360;
-        int object_speed = projectile.getSpeed();
-        Position speed = new Position();
-
-        if (heading >= 270) {
-            heading = heading % 270;
-            speed.setX(object_speed * (int) Math.sin(Math.toRadians(heading)));
-            speed.setY(object_speed * (int) Math.cos(Math.toRadians(heading)));
-        } else if (heading >= 180) {
-            heading = heading % 180;
-            speed.setX(object_speed * (int) Math.cos(Math.toRadians(heading)));
-            speed.setY(object_speed * (int) Math.sin(Math.toRadians(heading)));
-        } else if (heading >= 90) {
-            heading = heading % 90;
-            speed.setX(object_speed * (int) Math.sin(Math.toRadians(heading)));
-            speed.setY(object_speed * (int) Math.cos(Math.toRadians(heading)));
-        } else {
-            speed.setX(object_speed * (int) Math.cos(Math.toRadians(heading)));
-            speed.setY(object_speed * (int) Math.sin(Math.toRadians(heading)));
-        }
-        
-        return speed;
-    }
-
     public static double distanceFromPlayerToProjectileTrajectory(GameObject projectile, GameObject player) {
         int jari_jari = player.getSize()/2 + 1; // +1 karena pembagian di java dibulatkan kebawah
         Position projectile_position = projectile.getPosition(); 
         Position player_position = player.getPosition();
-        Position n = getXandYspeed(projectile);
-        int temp = n.getX();
-        n.setX(n.getY());
-        n.setY(-1 * temp);
+
+        double nx;
+        double ny;
+
+        int heading = projectile.currentHeading % 360;
+        int object_speed = projectile.getSpeed();
+
+        if (heading >= 270) {
+            heading = heading % 270;
+            nx = (object_speed * Math.sin(Math.toRadians(heading)));
+            ny = (object_speed * Math.cos(Math.toRadians(heading)));
+        } else if (heading >= 180) {
+            heading = heading % 180;
+            nx = (object_speed * Math.cos(Math.toRadians(heading)));
+            ny = (object_speed * Math.sin(Math.toRadians(heading)));
+        } else if (heading >= 90) {
+            heading = heading % 90;
+            nx = (object_speed * Math.sin(Math.toRadians(heading)));
+            ny = (object_speed * Math.cos(Math.toRadians(heading)));
+        } else {
+            nx = (object_speed * Math.cos(Math.toRadians(heading)));
+            ny = (object_speed * Math.sin(Math.toRadians(heading)));
+        }
+        double temp = nx;
+        nx = ny;
+        ny = (-1 * temp);
         Position PQ = new Position();
         PQ.setX(player_position.getX()-projectile_position.getX());
         PQ.setY(player_position.getY()-projectile_position.getY());
 
-        double distance = Math.abs((PQ.getX()*n.getX() + PQ.getY()*n.getY())/(Math.sqrt(n.getX()*n.getX() + n.getY()*n.getY())));
+        double distance = Math.abs((PQ.getX()*nx + PQ.getY()*ny)/(Math.sqrt(nx*nx + ny*ny)));
         distance -= Double.valueOf(jari_jari);
-
         return distance;
     }
 

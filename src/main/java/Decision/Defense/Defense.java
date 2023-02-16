@@ -29,7 +29,7 @@ public class Defense {
             .sorted(Comparator.comparing(item -> General.distanceFromPlayerToProjectileTrajectory(item, bot)))       
             .collect(Collectors.toList());
 
-        if (torpedoList.size() == 0) {
+        if (torpedoList.isEmpty()) {
             min = 100; // asumsi diurutkan membesar
         } else {
             min = General.distanceFromPlayerToProjectileTrajectory(torpedoList.get(0), bot);
@@ -42,7 +42,7 @@ public class Defense {
         PlayerAction playerAction = new PlayerAction();
         
         if (bot.getShieldCount() != 0) {
-            playerAction.action = PlayerActions.USESHIELD;
+            playerAction.action = PlayerActions.ACTIVATESHIELD;
             playerAction.heading = 0;
         } else {
             var torpedoList = gameState.getGameObjects()

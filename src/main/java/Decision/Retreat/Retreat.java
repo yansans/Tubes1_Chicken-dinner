@@ -56,11 +56,13 @@ public class Retreat {
         }
 
         // untuk kabur dari border
-        double border_prio = 1000000;
-        if (bot.getEffect() == 1) {
-            border_prio = 1;
+        double border_prio;
+        if (gameState.getWorld().getRadius() != null) {
+            border_prio = gameState.getWorld().getRadius() * gameState.getWorld().getRadius();
+            border_prio -= (bot.getPosition().getX()*bot.getPosition().getX() + bot.getPosition().getY()*bot.getPosition().getY());
+        } else {
+            border_prio = 1000000;
         }
-        // border_prio -= (bot.getPosition().getX()*bot.getPosition().getX() + bot.getPosition().getY()*bot.getPosition().getY());
 
         if (run_prio <= gas_prio & run_prio <= supernova_prio & run_prio <= border_prio) {
             this.prio = run_prio;
@@ -109,7 +111,7 @@ public class Retreat {
         } else {
             // menjauh dari border menuju pusat map
             playerAction.action = PlayerActions.FORWARD;
-            playerAction.heading = (General.objectHeadingtoPoint(0, 0, bot) + 180) % 360;
+            playerAction.heading = (General.objectHeadingtoPoint(0, 0, bot)) % 360;
         }
 
 
