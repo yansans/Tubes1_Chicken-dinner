@@ -39,11 +39,11 @@ public class Decisionmaker {
 
     // generalisasi
     public void findPriority() {
-        defense_prio.getDefensePrio(player, gameState);
+        defense_prio.getDefensePrio();
         decision_kind = 1;
         temp_prio = defense_prio.prio;
 
-        retreat_prio.getRetreatPrio(player, gameState);
+        retreat_prio.getRetreatPrio();
         if (temp_prio > retreat_prio.prio) {
             decision_kind = 2;
             decision_kind_variation = this.retreat_prio.kind;

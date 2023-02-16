@@ -19,20 +19,20 @@ public class Defense {
         this.gameState = gameState;
     }
 
-    public void getDefensePrio(GameObject player, GameState gameState) {
+    public void getDefensePrio() {
         // mendeteksi jika bot dekat dengan lintasan torpedo, regardless jumlah torpedo yang mendekatinya
         // jika ada satu saja torpedo yang mendekati bot, maka bot akan mengeluarkan shield
         double min;
         // melihat 
         var torpedoList = gameState.getGameObjects()
-            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.TORPEDOSALVO & General.isItHeadingTowards(item, player))
-            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToProjectileTrajectory(item, player)))       
+            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.TORPEDOSALVO & General.isItHeadingTowards(item, bot))
+            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToProjectileTrajectory(item, bot)))       
             .collect(Collectors.toList());
 
         if (torpedoList.size() == 0) {
             min = 100; // asumsi diurutkan membesar
         } else {
-            min = General.distanceFromPlayerToProjectileTrajectory(torpedoList.get(0), player);
+            min = General.distanceFromPlayerToProjectileTrajectory(torpedoList.get(0), bot);
         }
 
         this.prio = min;
