@@ -16,7 +16,7 @@ public class Decisionmaker {
     public int decision_kind;
     public int decision_kind_variation;
     public double temp_prio;
-    public teleporter teleporter_prio;
+    public Teleporter teleporter_prio;
     public Defense defense_prio;
     public Retreat retreat_prio;
     public Farm farm_prio;
@@ -93,7 +93,7 @@ public class Decisionmaker {
             }*/
         } else if (decision_kind == 4){
             return offence_prio.doOffence();
-        } else if(decision_kind ==5){
+        } else if(decision_kind == 5){
             return teleporter_prio.doTeleport(gameState, player);
         }
         System.out.println("end of function ");

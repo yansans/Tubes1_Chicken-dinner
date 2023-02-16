@@ -6,7 +6,7 @@ import Models.*;
 import java.util.*;
 import Decision.General.*;
 
-public class teleporter {
+public class Teleporter {
     
     public double teleOffPrio;
     private int acceptableDiff = 10; 
@@ -67,7 +67,7 @@ public class teleporter {
     }
     public PlayerAction doTeleport(GameState gameState, GameObject bot){
         List<GameObject> playerList = General.getObjectListSize(ObjectTypes.PLAYER, gameState, bot);
-        PlayerAction commands;
+        PlayerAction commands = new PlayerAction();
         switch(checkTeleport(gameState, bot)){
             case 2:
                 commands.setHeading(General.objectHeading(playerList.get(0), bot));
