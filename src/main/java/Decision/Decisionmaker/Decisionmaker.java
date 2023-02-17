@@ -49,13 +49,11 @@ public class Decisionmaker {
         // supernova optional
         // farming
 
-        double temp_prio = 0;
+        double temp_prio;
 
         farm_prio.getFarmPrio(player, gameState);
-        if (temp_prio > farm_prio.prio) {
-            decision_kind = 3;
-            temp_prio = farm_prio.prio;
-        }
+        decision_kind = 3;
+        temp_prio = farm_prio.prio;
 
         defense_prio.getDefensePrio();
         if (temp_prio > defense_prio.prio) {
