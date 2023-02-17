@@ -156,6 +156,7 @@ Untuk menjalankan visualisasi, masuk ke opsi load dan kemudian pilih game log ya
 ## Made by
 
 Kelompok Chicken dinner:
-Athif Nirwasito         (13521053)
-Louis Caesa Kesuma      (13521069)
-Yanuar Sano Nur Rasyid  (13521110)
+
+- Athif Nirwasito         (13521053)
+- Louis Caesa Kesuma      (13521069)
+- Yanuar Sano Nur Rasyid  (13521110)
