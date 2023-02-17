@@ -34,7 +34,7 @@ public class Offence {
     public PlayerAction doOffence(){
         var enemy = ObjectTypes.PLAYER;
         var action = PlayerActions.FIRETORPEDOES;
-        int min_size = 30;
+        int min_size = 25;
         System.out.println("fuel " + fuel);
         if (bot.size < min_size || fuel <= 0){
             action = PlayerActions.FORWARD;
@@ -68,7 +68,7 @@ public class Offence {
         // mendapatkan nilai prioritas untuk melakukan aksi torpedo
         double prio = 0;
         int max_distance = 50;
-        int min_size = bot.getSize();
+        int min_size = 25;
 
         var playerListD = General.getObjectListDistance(ObjectTypes.PLAYER, gameState, bot);
         var playerListS = General.getObjectListSize(ObjectTypes.PLAYER, gameState, bot);

@@ -39,6 +39,15 @@ public class Decisionmaker {
 
     // generalisasi
     public void findPriority() {
+        // priority utama jgn mati gr gr ring
+        // jgn mati gr gr cloud
+        // jgn mati gr gr musuh
+        // attack makan musuh teleport 
+        // attack makan musuh afterburner optional
+        // attack makan musuh jalan
+        // attack musuh torpedo
+        // supernova optional
+        // farming
         defense_prio.getDefensePrio();
         decision_kind = 1;
         temp_prio = defense_prio.prio;

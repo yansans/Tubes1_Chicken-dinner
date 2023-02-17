@@ -52,6 +52,12 @@ public class General {
         return Math.sqrt(triangleX * triangleX + triangleY * triangleY);
     }
 
+    public static double distanceFromPlayerToPlayer(GameObject player1, GameObject player2) {
+        var triangleX = Math.abs(player1.getPosition().x - player2.getPosition().x);
+        var triangleY = Math.abs(player1.getPosition().y - player2.getPosition().y);
+        return Math.sqrt(triangleX * triangleX + triangleY * triangleY) - player1.getSize() - player2.getSize();
+    }
+
     public static double distanceFromPlayerToLocation(Position x, GameObject player) {
         var triangleX = Math.abs(x.x - player.getPosition().x);
         var triangleY = Math.abs(x.y - player.getPosition().y);
@@ -100,16 +106,31 @@ public class General {
     
     public static List<GameObject> getObjectListDistance(ObjectTypes type, GameState gameState, GameObject bot){
         // membuat list gameobject tersusun dari yang terdekat terhadap player
-        List<GameObject> listObject;
+        List<GameObject> listObject ,orderedList;
+
         if (type == ObjectTypes.PLAYER){
             listObject = gameState.getPlayerGameObjects();
+            orderedList = getObjectPlayerDistance(gameState, bot);
         } else {
             listObject = gameState.getGameObjects();
-        }
-        var orderedList = listObject
+            orderedList = listObject
                 .stream().filter(item -> item.getGameObjectType() == type)
                 .sorted(Comparator
                         .comparing(item -> General.distanceFromPlayerToObject(bot, item)))
+                .collect(Collectors.toList());
+
+        }
+        return orderedList;
+    }
+
+    public static List<GameObject> getObjectPlayerDistance(GameState gameState, GameObject bot){
+        // membuat list gameobject tersusun dari yang terdekat terhadap player
+        List<GameObject> listObject;
+        listObject = gameState.getPlayerGameObjects();
+        var orderedList = listObject
+                .stream().filter(item -> item.getGameObjectType() == ObjectTypes.PLAYER)
+                .sorted(Comparator
+                        .comparing(item -> General.distanceFromPlayerToObject(bot, item)-bot.getSize()-item.getSize()))
                 .collect(Collectors.toList());
 
         return orderedList;
