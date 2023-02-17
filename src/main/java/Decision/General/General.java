@@ -165,29 +165,33 @@ public class General {
         int x2 = object2.getPosition().getX();
         int y2 = object2.getPosition().getY();
 
-        if (heading >= 270) {
-            if (x2 >= x & y2 <= y) {
-                return true;
-            } else {
-                return false;
-            }
-        } else if (heading >= 180) {
-            if (x2 <= x & y2 <= y) {
-                return true;
-            } else {
-                return false;
-            }
-        } else if (heading >= 90) {
-            if (x2 <= x & y2 >= y) {
-                return true;
-            } else {
-                return false;
-            }
+        if (x2 == x & y2 == y) {
+            return false;
         } else {
-            if (x2 >= x & y2 >= y) {
-                return true;
+            if (heading >= 270) {
+                if (x2 >= x & y2 <= y) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (heading >= 180) {
+                if (x2 <= x & y2 <= y) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (heading >= 90) {
+                if (x2 <= x & y2 >= y) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
-                return false;
+                if (x2 >= x & y2 >= y) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
         }
     }

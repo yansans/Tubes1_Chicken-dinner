@@ -25,7 +25,7 @@ public class Defense {
         double min;
         // melihat 
         var torpedoList = gameState.getGameObjects()
-            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.TORPEDOSALVO & !General.isItHeadingTowards(item, bot))
+            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.TORPEDOSALVO & General.isItHeadingTowards(item, bot))
             .sorted(Comparator.comparing(item -> General.distanceFromPlayerToProjectileTrajectory(item, bot)))       
             .collect(Collectors.toList());
 
@@ -41,7 +41,7 @@ public class Defense {
     public PlayerAction actionDefense() {
         PlayerAction playerAction = new PlayerAction();
         
-        if (bot.getShieldCount() != 0) {
+        if (bot.getShieldCount() != 0 & bot.getSize() >= 30) {
             playerAction.action = PlayerActions.ACTIVATESHIELD;
             playerAction.heading = 0;
         } else {
