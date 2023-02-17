@@ -127,7 +127,7 @@ public class Offence {
         if (playerListD.size() == 0){
             return 0;
         }
-        if (bot.getSize() < min_size){
+        if (bot.getSize() < min_size || bot.getTorpedoSalvoCount() == 0){
             return 0;
         }
 

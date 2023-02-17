@@ -30,7 +30,7 @@ public class Defense {
             .collect(Collectors.toList());
 
         if (torpedoList.isEmpty()) {
-            min = 100; // asumsi diurutkan membesar
+            min = 3000000; // asumsi diurutkan membesar
         } else {
             min = General.distanceFromPlayerToProjectileTrajectory(torpedoList.get(0), bot);
         }

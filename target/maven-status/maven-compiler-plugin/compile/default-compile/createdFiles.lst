@@ -1,5 +1,4 @@
 Decision\Defense\Defense.class
-Decision\Teleporter\Teleporter.class
 Decision\Offence\Offence.class
 Enums\ObjectTypes.class
 Models\PlayerAction.class

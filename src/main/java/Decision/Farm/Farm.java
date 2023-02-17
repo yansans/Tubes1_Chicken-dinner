@@ -23,11 +23,9 @@ public class Farm {
                 //bigger priority means more farming
                 //A bit of suggestion, subtract farm priority with other priority
                 double time = (getNearestFood(player, gameState)-player.size)/player.getSpeed();
-                Integer tick = 60;
                 var temp = General.getObjectListDistance(ObjectTypes.PLAYER, gameState, player);
                 /*Get Nearest Player Priority */ 
-                if(temp.size()<=1){this.prio = time/tick*40;}
-                else{this.prio = time/tick*25;}
+                this.prio = 200;
                 
         }
 

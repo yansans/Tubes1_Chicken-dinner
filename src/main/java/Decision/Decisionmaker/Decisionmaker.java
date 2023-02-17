@@ -51,14 +51,17 @@ public class Decisionmaker {
         farm_prio.getFarmPrio(player, gameState);
         decision_kind = 3;
         temp_prio = farm_prio.prio;
+        System.out.println(farm_prio.prio);
 
         defense_prio.getDefensePrio();
+        System.out.println(defense_prio.prio);
         if (temp_prio > defense_prio.prio) {
             decision_kind = 1;
             temp_prio = defense_prio.prio;
         }
 
         retreat_prio.getRetreatPrio();
+        System.out.println(retreat_prio.prio);
         if (temp_prio > retreat_prio.prio) {
             decision_kind = 2;
             decision_kind_variation = this.retreat_prio.kind;
@@ -66,6 +69,7 @@ public class Decisionmaker {
         }
 
         offence_prio.getPrioOffence();
+        System.out.println(offence_prio.prio_gen);
         if (temp_prio >= offence_prio.prio_gen){
             decision_kind = 4;
             temp_prio = offence_prio.prio_gen;
