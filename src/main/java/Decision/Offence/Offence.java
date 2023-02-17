@@ -88,7 +88,7 @@ public class Offence {
 
 
         }
-        return basicAttackSize(action, enemy, false);
+        return basicAttackDistance(action, enemy, false);
     }
 
     public void getPrioType(){
