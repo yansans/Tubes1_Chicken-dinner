@@ -155,19 +155,14 @@ public class Offence {
 
         var foodList = General.getObjectListDistance(ObjectTypes.FOOD, gameState, bot);
 
-        System.out.print("[");
-        for(Object it : foodList) {
-            System.out.print(it.toString() + ", ");
-        }
-        System.out.print("]");
-
         if (!foodList.isEmpty()) {
             head = General.objectHeading(foodList.get(0), bot);
+            command = PlayerActions.FORWARD;
         } 
 
         playerAction.action = command;
         playerAction.heading = head;
-
+        System.out.println("default offence");
         return playerAction;
     }
 
@@ -238,7 +233,42 @@ public class Offence {
         return playerAction;
     }
 
-    public PlayerAction detonateSupernova(GameState gameState){
+    private boolean checkSupernova(){
+        // cek apakah ada supernova pickup di world
+        var supernovaPickupList = General.getObjectListDistance(ObjectTypes.SUPERNOVAPICKUP, gameState, bot);
+        return !supernovaPickupList.isEmpty();
+        
+    }
+
+    public PlayerAction attackSupernova(PlayerAction before, int supernova_phase){
+        System.out.println(supernova_phase);
+        if (bot.supernovaAvailable == 1 && supernova_phase == 0) {
+            System.out.println("Mendapatkan supernova pickup");
+            return basicAttackDistance(PlayerActions.STOP, ObjectTypes.PLAYER, false);
+        }
+        if (supernova_phase == 0){
+            // default phase : tidak punya supernova
+            // cek apakah ada supernova pickup di world
+            if (checkSupernova()){
+                // jika ada, ambil supernova pickup
+                System.out.println("Menuju supernova pickup");
+                return basicAttackDistance(PlayerActions.FORWARD, ObjectTypes.SUPERNOVAPICKUP, false);
+            }
+        } else if (supernova_phase == 1){
+                // sudah punya supernova
+                // menembak supernova ke lawan
+                System.out.println("Menembak supernova");
+                return basicAttackDistance(PlayerActions.FIRESUPERNOVA, ObjectTypes.PLAYER, false);
+                
+        } else if (supernova_phase == 2){
+            // menunggu supernova ledakan
+            System.out.println("Meledakan supernova");
+            return detonateSupernova();
+        }
+        return before;
+    }
+
+    public PlayerAction detonateSupernova(){
         // meledakan supernova jika player memasuki radius ledakan
         PlayerAction playerAction = new PlayerAction();
         var command = PlayerActions.DETONATESUPERNOVA;
