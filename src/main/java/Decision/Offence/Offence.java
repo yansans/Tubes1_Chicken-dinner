@@ -14,6 +14,8 @@ public class Offence {
     private double supernovaRadius = 0.25 * supernovaSize;
     private int min_size = 15;
     public double prio_gen;
+    public double x_speed;
+    public double y_speed;
     private double kind;
     private static boolean isSupernovaing = false;
 
@@ -23,20 +25,22 @@ public class Offence {
     public Offence(GameObject bot, GameState gameState){
         this.bot = bot;
         this.gameState = gameState;
+        this.x_speed = -1;
+        this.y_speed = -1;
     }
 
     public void getPrioOffence(){
         var playerList = General.getObjectListDistance(ObjectTypes.PLAYER, gameState, bot);
         playerList.remove(bot);
         if (playerList.size() == 0){
-            prio_gen = 1000;
+            prio_gen = 3000000;
             return;
         } if (isSupernovaing){
             prio_gen = 0;
             return;
         }
         var player = playerList.get(0);
-        double distance = General.distanceFromPlayerToObject(bot, player);
+        double distance = General.distanceFromPlayerToPlayer(bot, player);
         prio_gen = distance;
     }
 
@@ -55,7 +59,32 @@ public class Offence {
                 return detonateSupernova();
             }
         } else if (kind == 3){
-            action = PlayerActions.FIRETELEPORT;
+            var playerlist = gameState.getGameObjects()
+                .stream().filter(item -> item.getGameObjectType() == ObjectTypes.PLAYER & item.getSize() <= bot.getSize() - 30)
+                .sorted(Comparator.comparing(item -> General.distanceFromPlayerToPlayer(item, bot)))
+                .collect(Collectors.toList());
+            
+            if (!playerlist.isEmpty()) {
+                fireTeleport(playerlist.get(0));
+            }
+        } else {
+            var teleporterlist = gameState.getGameObjects()
+            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.TELEPORTER & isItTheCorrectTeleporter(item))
+            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToPlayer(item, bot)))
+            .collect(Collectors.toList());
+
+            if (!teleporterlist.isEmpty()) {
+                var playerlist = gameState.getGameObjects()
+                .stream().filter(item -> item.getGameObjectType() == ObjectTypes.PLAYER & isItInTeleporterRadius(teleporterlist.get(0), item))
+                .sorted(Comparator.comparing(item -> General.distanceFromPlayerToPlayer(item, bot)))
+                .collect(Collectors.toList());
+
+                if (!playerlist.isEmpty()) {
+                    return playerTeleport();
+                }
+            }
+
+
         }
         return basicAttackSize(action, enemy, false);
     }
@@ -70,7 +99,11 @@ public class Offence {
         } else if (prio_sup > prio_tor && prio_sup > prio_eat){
             kind = 2;
         } else if (prio_eat > prio_tor && prio_eat > prio_sup){
-            kind = 3;
+            if (bot.getTeleporterCount() != 0) {
+                kind = 3;
+            } else {
+                kind = 4;
+            }
         } else {
             kind = 0;
         }
@@ -228,9 +261,27 @@ public class Offence {
     // bisa pake fungsi default
     public PlayerAction fireTeleport(GameObject player){
         // tembak teleport ke player dari bot
+        int heading = General.objectHeading(player, bot);
         PlayerAction playerAction = new PlayerAction();
         playerAction.setAction(PlayerActions.FIRETELEPORT);
-        playerAction.setHeading(General.objectHeading(player, bot));
+        playerAction.setHeading(heading);
+
+        if (heading >= 270) {
+            heading = heading % 270;
+            x_speed = (20 * Math.sin(Math.toRadians(heading)));
+            y_speed = (20 * Math.cos(Math.toRadians(heading)));
+        } else if (heading >= 180) {
+            heading = heading % 180;
+            x_speed = (20 * Math.cos(Math.toRadians(heading)));
+            y_speed = (20 * Math.sin(Math.toRadians(heading)));
+        } else if (heading >= 90) {
+            heading = heading % 90;
+            x_speed = (20 * Math.sin(Math.toRadians(heading)));
+            y_speed = (20 * Math.cos(Math.toRadians(heading)));
+        } else {
+            x_speed = (20 * Math.cos(Math.toRadians(heading)));
+            y_speed = (20 * Math.sin(Math.toRadians(heading)));
+        }
 
         return playerAction;
     }
@@ -241,6 +292,40 @@ public class Offence {
         playerAction.setAction(PlayerActions.TELEPORT);
         playerAction.setHeading(0);
         return playerAction;
+    }
+
+    public boolean isItTheCorrectTeleporter(GameObject teleporter) {
+        int heading = teleporter.getCurrHeading();
+        if (heading >= 270) {
+            heading = heading % 270;
+            if (x_speed == (20 * Math.sin(Math.toRadians(heading))) & y_speed == (20 * Math.cos(Math.toRadians(heading)))) {
+                return true;
+            }
+        } else if (heading >= 180) {
+            heading = heading % 180;
+            if (x_speed == (20 * Math.cos(Math.toRadians(heading))) & y_speed == (20 * Math.sin(Math.toRadians(heading)))) {
+                return true;
+            }
+        } else if (heading >= 90) {
+            heading = heading % 90;
+            if (x_speed == (20 * Math.sin(Math.toRadians(heading))) & y_speed == (20 * Math.cos(Math.toRadians(heading)))) {
+                return true;
+            }
+        } else {
+            if (x_speed == (20 * Math.cos(Math.toRadians(heading))) & y_speed == (20 * Math.sin(Math.toRadians(heading)))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isItInTeleporterRadius(GameObject teleporter, GameObject player) {
+        if (General.distanceFromPlayerToPlayer(teleporter, player) <= 0) {
+            return true;
+        }
+
+        return false;
     }
 
     public boolean checkNearSupernova(){

@@ -15,7 +15,6 @@ import Decision.Teleporter.*;
 public class Decisionmaker {
     public int decision_kind;
     public int decision_kind_variation;
-    public double temp_prio;
     public Teleporter teleporter_prio;
     public Defense defense_prio;
     public Retreat retreat_prio;
@@ -50,7 +49,7 @@ public class Decisionmaker {
         // supernova optional
         // farming
 
-        temp_prio = 0;
+        double temp_prio = 0;
 
         farm_prio.getFarmPrio(player, gameState);
         if (temp_prio > farm_prio.prio) {
@@ -72,7 +71,7 @@ public class Decisionmaker {
         }
 
         offence_prio.getPrioOffence();
-        if (temp_prio > offence_prio.prio_gen){
+        if (temp_prio >= offence_prio.prio_gen){
             decision_kind = 4;
             temp_prio = offence_prio.prio_gen;
         }
