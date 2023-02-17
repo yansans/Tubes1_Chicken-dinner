@@ -93,18 +93,6 @@ public class Decisionmaker {
            return retreat_prio.actionRetreat();
         }else if(this.decision_kind==3){//Farm
             return farm_prio.normalFarm(command, player, gameState);
-            /* ADV
-            if(retreat_prio.prio<farm_prio.prio-10){
-                var playerlist = gameState.getGameObjects()
-                .stream().filter(item -> item.getGameObjectType() == ObjectTypes.PLAYER)
-                .sorted(Comparator.comparing(item -> General.distanceFromPlayerToProjectileTrajectory(item, player)))
-                .collect(Collectors.toList());
-                
-                Farm.farmInCone(command, );
-            }
-            else{
-                Farm.normalFarm(command, player, gameState);
-            }*/
         } else if (decision_kind == 4){
             return offence_prio.doOffence();
         }
