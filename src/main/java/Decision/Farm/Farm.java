@@ -16,15 +16,7 @@ public class Farm {
         
 
         public void getFarmPrio(GameObject player, GameState gameState){
-                //tick: action/second
-                //time: num of action
-                //100 means most prioritize
-                //The concept is if it takes a millenium to get food, we go cowabungga
-                //bigger priority means more farming
-                //A bit of suggestion, subtract farm priority with other priority
-                /*Get Nearest Player Priority */ 
-                this.prio = 200 + gameState.getWorld().getCurrentTick()*1.1;
-                
+                this.prio = 200 + gameState.getWorld().getCurrentTick()*1.1;     
         }
 
 
