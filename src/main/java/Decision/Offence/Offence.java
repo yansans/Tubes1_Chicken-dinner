@@ -26,6 +26,7 @@ public class Offence {
     }
 
     public void getPrioOffence(){
+        //Procedure yang menghitung priority offence dan menyimpannya di prio_gen
         var playerList = General.getObjectListDistance(ObjectTypes.PLAYER, gameState, bot);
         playerList.remove(bot);
         if (playerList.size() == 0){
@@ -41,6 +42,7 @@ public class Offence {
     }
 
     public PlayerAction doOffence(){
+        // Fungsi yang mengembalikan aksi terhadap kind yang didapatkan
         var enemy = ObjectTypes.PLAYER;
         var action = PlayerActions.FIRETORPEDOES;
 
@@ -107,8 +109,8 @@ public class Offence {
         return prio;
     }
 
-
     public double getPrioSupernova(){
+        // mendapatkan nilai prioritas untuk melakukan aksi supernova
         // max prio 220
         // min prio 20
         double prio = 0;
@@ -159,7 +161,7 @@ public class Offence {
     }
 
     public PlayerAction defaultAction(){
-        // return playeraction default yaitu Forward ke head makanan atau 0
+        // return playeraction default yaitu STOP ke head makanan atau 0
         var playerAction = new PlayerAction(); 
         var command = PlayerActions.STOP;
         int head = 0;
@@ -176,7 +178,6 @@ public class Offence {
         System.out.println("default offence");
         return playerAction;
     }
-
 
     public PlayerAction basicAttackDistance(PlayerActions command, ObjectTypes object, boolean desc){
         // melakukan command dengan heading objek dengan jarak tertentu dari player
@@ -225,7 +226,6 @@ public class Offence {
         return playerAction;
     }
 
-    // bisa pake fungsi default
     public PlayerAction fireTeleport(GameObject player){
         // tembak teleport ke player dari bot
         PlayerAction playerAction = new PlayerAction();
@@ -288,26 +288,4 @@ public class Offence {
 
         return playerAction;
     }
-
-    // private int predictHead(GameObject projectile, GameObject player){
-    //     // memprediksi heading yang dibutuhkan untuk menembak ke tempat player akan bergerak
-
-    //     int projectile_speed = projectile.getSpeed();
-    //     int player_speed = player.getSpeed();
-    //     int player_heading = player.currentHeading;
-
-    //     var bot = getBot();
-
-    //     double distanceToPlayer = getDistanceBetween(bot, player);
-    //     double timeToPlayer = distanceToPlayer / projectile_speed;
-    //     double distanceToPlayerAfterTime = player_speed * timeToPlayer;
-
-    //     double x = player.getPosition().x + distanceToPlayerAfterTime * Math.cos(player_heading);
-    //     double y = player.getPosition().y + distanceToPlayerAfterTime * Math.sin(player_heading);
-
-    //     double heading = Math.atan2(y - bot.getPosition().y, x - bot.getPosition().x);
-
-    //     return (int) Math.toDegrees(heading);
-    // }
-
 }
