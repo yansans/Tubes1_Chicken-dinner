@@ -46,7 +46,7 @@ public class Farm {
                 
         }
 
-        public static void normalFarm(PlayerAction command1, GameObject player, GameState gameState){
+        public static PlayerAction normalFarm(PlayerAction command1, GameObject player, GameState gameState){
                 PlayerAction command = new PlayerAction();
                         var foodList = gameState.getGameObjects()
                         .stream().filter(item -> (item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPERFOOD))
@@ -55,7 +55,7 @@ public class Farm {
                         .collect(Collectors.toList());
                         command.heading = General.objectHeading(foodList.get(0), player);
                         command.setAction(PlayerActions.FORWARD);
-                command1 = command;
+               return command;
         }
 
         public PlayerAction farmInCone(GameObject player, GameState gameState, Position x, int cone){

@@ -32,6 +32,7 @@ public class Decisionmaker {
         this.retreat_prio = new Retreat(player, gameState);
         this.farm_prio = new Farm();
         this.offence_prio = new Offence(player, gameState);
+        this.teleporter_prio = new Teleporter();
     }
     // lanjutkan
 
@@ -48,9 +49,20 @@ public class Decisionmaker {
         // attack musuh torpedo
         // supernova optional
         // farming
+
+        temp_prio = 0;
+
+        farm_prio.getFarmPrio(player, gameState);
+        if (temp_prio > farm_prio.prio) {
+            decision_kind = 3;
+            temp_prio = farm_prio.prio;
+        }
+
         defense_prio.getDefensePrio();
-        decision_kind = 1;
-        temp_prio = defense_prio.prio;
+        if (temp_prio > defense_prio.prio) {
+            decision_kind = 1;
+            temp_prio = defense_prio.prio;
+        }
 
         retreat_prio.getRetreatPrio();
         if (temp_prio > retreat_prio.prio) {
@@ -59,21 +71,16 @@ public class Decisionmaker {
             temp_prio = retreat_prio.prio;
         }
 
-        farm_prio.getFarmPrio(player, gameState);
-        if (temp_prio > farm_prio.prio) {
-            decision_kind = 3;
-            temp_prio = farm_prio.prio;
+        offence_prio.getPrioOffence();
+        if (temp_prio > offence_prio.prio_gen){
+            decision_kind = 4;
+            temp_prio = offence_prio.prio_gen;
         }
 
-        offence_prio.getPrioGeneral();
-        if (temp_prio > offence_prio.prio){
-            decision_kind = 4;
-            temp_prio = offence_prio.prio;
-        }
-        teleporter_prio.getTeleOffPrio(gameState, player);
-        if(temp_prio>teleporter_prio.teleOffPrio){
-            decision_kind = 5;
-        }
+        // teleporter_prio.getTeleOffPrio(gameState, player);
+        // if(temp_prio>teleporter_prio.teleOffPrio){
+        //     decision_kind = 5;
+        // }
         
     }
 
@@ -87,7 +94,7 @@ public class Decisionmaker {
         } else if (this.decision_kind == 2) { // anggap 2 adalah retreat
            return retreat_prio.actionRetreat();
         }else if(this.decision_kind==3){//Farm
-            Farm.normalFarm(command, player, gameState);
+            return farm_prio.normalFarm(command, player, gameState);
             /* ADV
             if(retreat_prio.prio<farm_prio.prio-10){
                 var playerlist = gameState.getGameObjects()

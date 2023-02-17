@@ -12,10 +12,10 @@ public class Offence {
 
     private int supernovaSize = 10;
     private double supernovaRadius = 0.25 * supernovaSize;
-    public double prio;
+    private int min_size = 15;
+    public double prio_gen;
     private double kind;
-    private double var;
-    private static int fuel;
+    private static boolean isSupernovaing = false;
 
     private GameObject bot;
     private GameState gameState;
@@ -23,52 +23,66 @@ public class Offence {
     public Offence(GameObject bot, GameState gameState){
         this.bot = bot;
         this.gameState = gameState;
-        fuel += fuel;
     }
 
-    public void getPrioGeneral(){
-        double max = 10;
-        prio = getPrioType() < 3 ? 0.0 : max;
+    public void getPrioOffence(){
+        var playerList = General.getObjectListDistance(ObjectTypes.PLAYER, gameState, bot);
+        playerList.remove(bot);
+        if (playerList.size() == 0){
+            prio_gen = 1000;
+            return;
+        } if (isSupernovaing){
+            prio_gen = 0;
+            return;
+        }
+        var player = playerList.get(0);
+        double distance = General.distanceFromPlayerToObject(bot, player);
+        prio_gen = distance;
     }
 
     public PlayerAction doOffence(){
         var enemy = ObjectTypes.PLAYER;
         var action = PlayerActions.FIRETORPEDOES;
-        int min_size = 25;
-        System.out.println("fuel " + fuel);
-        if (bot.size < min_size || fuel <= 0){
-            action = PlayerActions.FORWARD;
-            enemy = ObjectTypes.FOOD;
-            fuel += bot.getSize() / 10;
-        }
-        if (kind == 2){
-            action = PlayerActions.FIRESUPERNOVA;
+
+        if (kind == 1){
+            action = PlayerActions.FIRETORPEDOES;
+        } else if (kind == 2){
+            if (!isSupernovaing){
+                isSupernovaing = true;
+                return basicAttackSize(PlayerActions.FIRESUPERNOVA, enemy, true);
+            } else {
+                isSupernovaing = false;
+                return detonateSupernova();
+            }
         } else if (kind == 3){
             action = PlayerActions.FIRETELEPORT;
         }
-        fuel -= 5;
-        return basicAttackDistance(action, enemy, false);
+        return basicAttackSize(action, enemy, false);
     }
 
-    public double getPrioType(){
-        double max = 3;
-        double all_prio = 0;
+    public void getPrioType(){
+        double prio_tor = getPrioTorpedoes();
+        double prio_sup = getPrioSupernova();
+        double prio_eat = getPrioEat();
 
-        all_prio += getPrioTorpedoes();
-        all_prio += getPrioSupernova();
-        all_prio += getPrioEat();
-
-        kind = (int) all_prio / 10;
-        var = (int) all_prio % 10;
-
-        return max - kind - var;
+        if (prio_tor > prio_sup && prio_tor > prio_eat){
+            kind = 1;
+        } else if (prio_sup > prio_tor && prio_sup > prio_eat){
+            kind = 2;
+        } else if (prio_eat > prio_tor && prio_eat > prio_sup){
+            kind = 3;
+        } else {
+            kind = 0;
+        }
     }
     
     public double getPrioTorpedoes(){
         // mendapatkan nilai prioritas untuk melakukan aksi torpedo
+        // max prio 10
+        // min prio 5
         double prio = 0;
         int max_distance = 50;
-        int min_size = 25;
+        int min_size_attack = 25;
 
         var playerListD = General.getObjectListDistance(ObjectTypes.PLAYER, gameState, bot);
         var playerListS = General.getObjectListSize(ObjectTypes.PLAYER, gameState, bot);
@@ -78,12 +92,15 @@ public class Offence {
         if (playerListD.size() == 0){
             return 0;
         }
+        if (bot.getSize() < min_size){
+            return 0;
+        }
 
         // apabila player tidak jauh
         if (General.distanceFromPlayerToObject(bot, playerListD.get(0)) <= max_distance) {
             prio += 5;
         // apabila player lebih besar dari size bot
-        } if (playerListS.get(0).getSize() > min_size){
+        } if (playerListS.get(0).getSize() > min_size_attack){
             prio += 5;
         }
 
@@ -92,36 +109,30 @@ public class Offence {
 
 
     public double getPrioSupernova(){
+        // max prio 220
+        // min prio 20
         double prio = 0;
-        int min_size = bot.getSize();
-        int mult = 10;
-        
-        var playerListS = General.getObjectListSize(ObjectTypes.PLAYER, gameState, bot);
-        playerListS.remove(bot);
+        int mult = 2;
 
-        Collections.reverse(playerListS);
-
-        if (playerListS.size() == 0){
+        if (bot.supernovaAvailable == 0){
             return 0;
         }
-
-        // apabila player lebih besar dari size bot
-        if (playerListS.get(0).getSize() > min_size){
-            prio += 5;
+        prio += 10;
+        if (checkNearSupernova()){
+            prio += 100;
         }
-        // apabila player lebih besar dari size bot * mult
-        if (playerListS.get(0).getSize() > min_size * mult){
-            prio += 5;
-        }
-        // ide lain liat player yang berkerumun
 
-        return prio;
+        return prio * mult;
     }
 
     public double getPrioEat(){
+        // mendapatkan nilai prioritas untuk melakukan aksi makan
+        // max prio 45
+        // min prio 15
         double prio = 0;
         int min_size = bot.getSize();
         int min_distance = 50;
+        int mult = 3;
 
         var playerListS = General.getObjectListSize(ObjectTypes.PLAYER, gameState, bot);
         playerListS.remove(bot);
@@ -132,9 +143,9 @@ public class Offence {
 
         // apabila player lebih kecil dari size bot
         if (playerListS.get(0).getSize() < min_size){
-            prio += 2.5;
+            prio += 5;
             if (General.distanceFromPlayerToObject(bot, playerListS.get(0)) <= min_distance){
-                prio += 2.5;
+                prio += 5;
             }
         }
 
@@ -144,7 +155,7 @@ public class Offence {
             prio += 5;
         }
 
-        return prio;
+        return prio * mult;
     }
 
     public PlayerAction defaultAction(){
@@ -209,14 +220,13 @@ public class Offence {
         if (!objectList.isEmpty()) {
             playerAction.setHeading(General.objectHeading(objectList.get(0), bot));
         } else {
-    
             return defaultAction();
         }
         return playerAction;
     }
 
     // bisa pake fungsi default
-    public PlayerAction fireTelport(GameObject player){
+    public PlayerAction fireTeleport(GameObject player){
         // tembak teleport ke player dari bot
         PlayerAction playerAction = new PlayerAction();
         playerAction.setAction(PlayerActions.FIRETELEPORT);
@@ -233,39 +243,17 @@ public class Offence {
         return playerAction;
     }
 
-    private boolean checkSupernova(){
-        // cek apakah ada supernova pickup di world
-        var supernovaPickupList = General.getObjectListDistance(ObjectTypes.SUPERNOVAPICKUP, gameState, bot);
-        return !supernovaPickupList.isEmpty();
-        
-    }
+    public boolean checkNearSupernova(){
+        // cek apakah ada player yang dekat supernova
+        var playerList = General.getObjectListDistance(ObjectTypes.PLAYER, gameState, bot);
+        playerList.remove(bot);
 
-    public PlayerAction attackSupernova(PlayerAction before, int supernova_phase){
-        System.out.println(supernova_phase);
-        if (bot.supernovaAvailable == 1 && supernova_phase == 0) {
-            System.out.println("Mendapatkan supernova pickup");
-            return basicAttackDistance(PlayerActions.STOP, ObjectTypes.PLAYER, false);
-        }
-        if (supernova_phase == 0){
-            // default phase : tidak punya supernova
-            // cek apakah ada supernova pickup di world
-            if (checkSupernova()){
-                // jika ada, ambil supernova pickup
-                System.out.println("Menuju supernova pickup");
-                return basicAttackDistance(PlayerActions.FORWARD, ObjectTypes.SUPERNOVAPICKUP, false);
-            }
-        } else if (supernova_phase == 1){
-                // sudah punya supernova
-                // menembak supernova ke lawan
-                System.out.println("Menembak supernova");
-                return basicAttackDistance(PlayerActions.FIRESUPERNOVA, ObjectTypes.PLAYER, false);
-                
-        } else if (supernova_phase == 2){
-            // menunggu supernova ledakan
-            System.out.println("Meledakan supernova");
-            return detonateSupernova();
-        }
-        return before;
+        var supernovaBombList = General.getObjectListDistance(ObjectTypes.SUPERNOVABOMB, gameState, bot);
+
+        if (!playerList.isEmpty() && !supernovaBombList.isEmpty()) {
+            return (General.distanceFromPlayerToObject(playerList.get(0), supernovaBombList.get(0)) <= supernovaRadius);
+        } else 
+            return false;
     }
 
     public PlayerAction detonateSupernova(){
@@ -273,17 +261,6 @@ public class Offence {
         PlayerAction playerAction = new PlayerAction();
         var command = PlayerActions.DETONATESUPERNOVA;
         int head = 0;
-
-        var playerList = General.getObjectListDistance(ObjectTypes.PLAYER, gameState, bot);
-        playerList.remove(bot);
-
-        var supernovaBombList = General.getObjectListDistance(ObjectTypes.SUPERNOVABOMB, gameState, bot);
-
-        if (!playerList.isEmpty() && !supernovaBombList.isEmpty()) {
-            if (General.distanceFromPlayerToObject(playerList.get(0), supernovaBombList.get(0)) > supernovaRadius) {
-                return defaultAction();
-            }
-        }
 
         playerAction.setAction(command);
         playerAction.setHeading(head);

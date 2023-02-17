@@ -43,16 +43,6 @@ public class BotService {
             Decisionmaker decision = new Decisionmaker(getBot(), getGameState());
             playerAction = decision.whatBotShouldDo();
 
-
-            // Offence sp = new Offence(getBot(), getGameState());
-            // playerAction = sp.attackSupernova(playerAction , supernova_phase);
-            // if (playerAction.getAction() == PlayerActions.STOP && supernova_phase == 1){
-            //     supernova_phase = 1;
-            // } else if (playerAction.getAction() == PlayerActions.FIRESUPERNOVA && supernova_phase == 1){
-            //     supernova_phase = 2;
-            // }
-            // if (bot.supernovaAvailable == 1 && supernova_phase == 0) supernova_phase = 1;
-
             printPlayerAction();
             setPlayerAction(playerAction);
         }
