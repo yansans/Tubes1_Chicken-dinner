@@ -25,7 +25,7 @@ public class Defense {
         double min;
         // melihat 
         var torpedoList = gameState.getGameObjects()
-            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.TORPEDOSALVO & General.isItHeadingTowards(item, bot))
+            .stream().filter(item -> item.getGameObjectType() == ObjectTypes.TORPEDOSALVO & !General.isItHeadingTowards(item, bot))
             .sorted(Comparator.comparing(item -> General.distanceFromPlayerToProjectileTrajectory(item, bot)))       
             .collect(Collectors.toList());
 

@@ -26,22 +26,22 @@ public class Retreat {
         double gas_prio = 1000000;
         var gasList = gameState.getGameObjects()
             .stream().filter(item -> item.getGameObjectType() == ObjectTypes.GASCLOUD)
-            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToObject(item, bot)))       
+            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToPlayer(item, bot)))       
             .collect(Collectors.toList());
 
         if (!gasList.isEmpty()){
-            gas_prio = General.distanceFromPlayerToObject(gasList.get(0), bot) * 3; // skalanya dapat berubah
+            gas_prio = General.distanceFromPlayerToPlayer(gasList.get(0), bot) * 3; // skalanya dapat berubah
         }
 
         // untuk kabur dari player
         double run_prio = 1000000;
         var playerlist = gameState.getGameObjects()
             .stream().filter(item -> item.getGameObjectType() == ObjectTypes.PLAYER)
-            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToObject(item, bot)))
+            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToPlayer(item, bot)))
             .collect(Collectors.toList());
 
         if (!playerlist.isEmpty()){
-            run_prio = General.distanceFromPlayerToObject(playerlist.get(1), bot);
+            run_prio = General.distanceFromPlayerToPlayer(playerlist.get(1), bot);
         }
 
         // untuk kabur dari supernova
@@ -60,6 +60,7 @@ public class Retreat {
         if (gameState.getWorld().getRadius() != null) {
             border_prio = gameState.getWorld().getRadius() * gameState.getWorld().getRadius();
             border_prio -= (bot.getPosition().getX()*bot.getPosition().getX() + bot.getPosition().getY()*bot.getPosition().getY());
+            border_prio -= bot.getSize()*2;
         } else {
             border_prio = 1000000;
         }
@@ -85,19 +86,19 @@ public class Retreat {
         if (kind == 1) { // lari dari gas
             var gasList = gameState.getGameObjects()
             .stream().filter(item -> item.getGameObjectType() == ObjectTypes.GASCLOUD)
-            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToObject(item, bot)))       
+            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToPlayer(item, bot)))       
             .collect(Collectors.toList());
 
             playerAction.action = PlayerActions.FORWARD;
-            playerAction.heading = (General.objectHeading(gasList.get(0), bot) + 180) % 360;
+            playerAction.heading = (General.objectHeading(gasList.get(0), bot) + 183) % 360;
         } else if (kind == 2) { // lari dari player lain
             var playerlist = gameState.getGameObjects()
             .stream().filter(item -> item.getGameObjectType() == ObjectTypes.PLAYER)
-            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToObject(item, bot)))
+            .sorted(Comparator.comparing(item -> General.distanceFromPlayerToPlayer(item, bot)))
             .collect(Collectors.toList());
 
             playerAction.action = PlayerActions.FORWARD;
-            playerAction.heading = (General.objectHeading(playerlist.get(1), bot) + 180) % 360;           
+            playerAction.heading = (General.objectHeading(playerlist.get(1), bot) + 183) % 360;           
 
         } else if (kind == 3) { // lari dari supernova
             // menjauh dari tempat supernova sekarang
@@ -107,7 +108,7 @@ public class Retreat {
             .collect(Collectors.toList());
 
             playerAction.action = PlayerActions.FORWARD;
-            playerAction.heading = (General.objectHeading(supernovalist.get(0), bot) + 180) % 360;
+            playerAction.heading = (General.objectHeading(supernovalist.get(0), bot) + 183) % 360;
         } else {
             // menjauh dari border menuju pusat map
             playerAction.action = PlayerActions.FORWARD;

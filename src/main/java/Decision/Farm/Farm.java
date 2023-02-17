@@ -22,10 +22,8 @@ public class Farm {
                 //The concept is if it takes a millenium to get food, we go cowabungga
                 //bigger priority means more farming
                 //A bit of suggestion, subtract farm priority with other priority
-                double time = (getNearestFood(player, gameState)-player.size)/player.getSpeed();
-                var temp = General.getObjectListDistance(ObjectTypes.PLAYER, gameState, player);
                 /*Get Nearest Player Priority */ 
-                this.prio = 200;
+                this.prio = 200 + gameState.getWorld().getCurrentTick()*1.1;
                 
         }
 
