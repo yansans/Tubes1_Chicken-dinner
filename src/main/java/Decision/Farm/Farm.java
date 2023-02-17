@@ -46,39 +46,16 @@ public class Farm {
                 
         }
 
-        public static PlayerAction normalFarm(PlayerAction command1, GameObject player, GameState gameState){
+        public PlayerAction normalFarm(PlayerAction command1, GameObject player, GameState gameState){
                 PlayerAction command = new PlayerAction();
                         var foodList = gameState.getGameObjects()
-                        .stream().filter(item -> (item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPERFOOD))
+                        .stream().filter(item -> (item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPERFOOD || item.getGameObjectType()==ObjectTypes.SUPERNOVAPICKUP))
                         .sorted(Comparator
                                 .comparing(item -> General.distanceFromPlayerToObject(item, player)))
                         .collect(Collectors.toList());
                         command.heading = General.objectHeading(foodList.get(0), player);
                         command.setAction(PlayerActions.FORWARD);
                return command;
-        }
-
-        public PlayerAction farmInCone(GameObject player, GameState gameState, Position x, int cone){
-            /*An idea that farms while moving toward something*/
-            /*x: Posistion to go to */
-            /*cone: The limited degree for farmming */
-            /*Say we are at C,food at B, we go to A*/
-            /*Formula  acos((a^2+b^2-c^2)/2ab)*/
-            /*a = getDistanceBetween(player.position,item) */
-            /*c = getDistanceBetween(item,x) */
-            double b = General.distanceFromPlayerToLocation(x, player);
-            double temp = Math.toRadians(cone);
-            
-            PlayerAction command = new PlayerAction();
-            var foodList = gameState.getGameObjects()
-            .stream().filter((item -> item.getGameObjectType() == ObjectTypes.FOOD || item.getGameObjectType()==ObjectTypes.SUPERFOOD && 
-            Math.cos(temp)<(Math.pow(General.distanceFromPlayerToObject(item, player),2)+Math.pow(b, 2)-Math.pow(General.distanceFromPlayerToLocation(x, item),2))/(2*b*General.distanceFromPlayerToObject(item, player))))
-            .sorted(Comparator
-                    .comparing(item -> General.distanceFromPlayerToObject(item, player)))
-            .collect(Collectors.toList());
-            command.heading = General.objectHeading(foodList.get(0), player);
-            command.setAction(PlayerActions.FORWARD);
-            return command;
         }
 }
 
