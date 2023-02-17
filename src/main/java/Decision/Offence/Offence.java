@@ -12,7 +12,7 @@ public class Offence {
 
     private int supernovaSize = 10;
     private double supernovaRadius = 0.25 * supernovaSize;
-    private int min_size = 15;
+    private int min_size = 25;
     public double prio_gen;
     public double x_speed;
     public double y_speed;
@@ -86,7 +86,6 @@ public class Offence {
                 }
             }
 
-
         }
         return basicAttackDistance(action, enemy, false);
     }
@@ -95,18 +94,20 @@ public class Offence {
         double prio_tor = getPrioTorpedoes();
         double prio_sup = getPrioSupernova();
         double prio_eat = getPrioEat();
+        
 
-        if (prio_tor > prio_sup && prio_tor > prio_eat){
-            kind = 1;
-        } else if (prio_sup > prio_tor && prio_sup > prio_eat){
-            kind = 2;
-        } else if (prio_eat > prio_tor && prio_eat > prio_sup){
+        if (prio_eat > prio_tor && prio_eat > prio_sup){
             if (bot.getTeleporterCount() != 0) {
                 kind = 3;
             } else {
                 kind = 4;
             }
-        } else {
+        } 
+        else if (prio_sup > prio_tor && prio_sup > prio_eat){
+            kind = 2;
+        } else if (prio_tor > prio_sup && prio_tor > prio_eat){
+            kind = 1;
+        }else {
             kind = 0;
         }
     }
@@ -117,7 +118,7 @@ public class Offence {
         // min prio 5
         double prio = 0;
         int max_distance = 50;
-        int min_size_attack = 25;
+        int min_size_attack = 50;
 
         var playerListD = General.getObjectListDistance(ObjectTypes.PLAYER, gameState, bot);
         var playerListS = General.getObjectListSize(ObjectTypes.PLAYER, gameState, bot);
@@ -127,7 +128,7 @@ public class Offence {
         if (playerListD.size() == 0){
             return 0;
         }
-        if (bot.getSize() < min_size || bot.getTorpedoSalvoCount() == 0){
+        if (bot.getSize() < min_size || bot.getTorpedoSalvoCount() < 4){
             return 0;
         }
 

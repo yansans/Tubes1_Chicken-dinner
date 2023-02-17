@@ -14,9 +14,8 @@ public class Farm {
 
         public double prio;
         
-
         public void getFarmPrio(GameObject player, GameState gameState){
-                this.prio = 200 + gameState.getWorld().getCurrentTick()*1.1;     
+                this.prio = 100 + gameState.getWorld().getCurrentTick();     
         }
 
 

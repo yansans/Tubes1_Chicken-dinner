@@ -60,7 +60,7 @@ public class Retreat {
         if (gameState.getWorld().getRadius() != null) {
             border_prio = gameState.getWorld().getRadius() * gameState.getWorld().getRadius();
             border_prio -= (bot.getPosition().getX()*bot.getPosition().getX() + bot.getPosition().getY()*bot.getPosition().getY());
-            border_prio -= bot.getSize()*2;
+            border_prio -= bot.getSize()*5;
         } else {
             border_prio = 1000000;
         }
